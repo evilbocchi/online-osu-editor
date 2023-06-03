@@ -1,0 +1,55 @@
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-Heavy.ttf);
+    font-weight: bolder;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-HeavyItalic.ttf);
+    font-weight: bolder;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-Bold.ttf);
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-BoldItalic.ttf);
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-SemiBold.ttf);
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-SemiBoldItalic.ttf);
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-Light.ttf);
+    font-weight: light;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-LightItalic.ttf);
+    font-weight: light;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-Thin.ttf);
+    font-weight: lighter;
+}
+@font-face {
+    font-family: 'Torus Pro';
+    src: url(./TorusPro-ThinItalic.ttf);
+    font-weight: lighter;
+    font-style: italic;
+}
