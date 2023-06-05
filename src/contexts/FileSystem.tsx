@@ -28,10 +28,9 @@ const FileProvider: React.FC<any> = ({ children }) => {
           throw e;
         }
         setFs(BrowserFS.BFSRequire('fs'));
-        console.log(fs);
       }
     );
-  }, []);
+  }, [fs]);
 
   return <FileContext.Provider value={fs}>{children}</FileContext.Provider>;
 };

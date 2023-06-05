@@ -1,82 +1,247 @@
-import React, { useState, useEffect, useContext } from "react";
-import * as BrowserFS from 'browserfs';
-import { FileContext } from "../contexts/FileSystem";
-
-import { ROOT_DIRECTORY } from '../utils/constants';
+import { useState, useContext, useEffect } from "react";
 import { FSModule } from "browserfs/dist/node/core/FS";
 
-class PathVisualiser extends React.Component<{ path: string, cd: any }> {
-    constructor(props) {
-        super(props);
-    }
+import { FileContext } from "@/contexts/FileSystem";
+import { dataUrlToUtf8, getDataType, getDataUrl, getFileExt, getFileIcon, getFileKind, getFileName, getFormattedSize } from "@/utils/file";
+import { ROOT_DIRECTORY } from '@/utils/constants';
+import { rm, path, download } from "@/utils/filesystem";
+import { inputDirectory, inputFiles } from "@/utils/input";
+import { MapAudioContext } from "@/contexts/AudioManager";
 
-    render() {
-        var path = this.props.path;
-        var split = path == ROOT_DIRECTORY ? [""] : path.split("/");
-        split[0] = "";
-        var paths = [];
-        for (var i = 0; i < split.length; i++) {
-            paths[i] = (i == 0) ? { fileName: ROOT_DIRECTORY, path: ROOT_DIRECTORY } : { fileName: split[i], path: split[0] };
-            for (var o = 0; o <= i; o++) {
-                if (o > 0) {
-                    paths[i].path = paths[i].path + "/" + split[o];
-                }
+const PathVisualiser = ({ dir, cd, setSelected }) => {
+    var split = dir == ROOT_DIRECTORY ? [""] : dir.split("/");
+    split[0] = "";
+    var dirs = [];
+    for (var i = 0; i < split.length; i++) {
+        dirs[i] = (i == 0) ? { fileName: ROOT_DIRECTORY, dir: ROOT_DIRECTORY } : { fileName: split[i], dir: split[0] };
+        for (var o = 0; o <= i; o++) {
+            if (o > 0) {
+                dirs[i].dir = dirs[i].dir + "/" + split[o];
             }
         }
-        return (<div className="path">
-            {paths.map((d) => <PathButton key={d.path} path={d.path} fileName={d.fileName} cd={this.props.cd} />)}
-        </div>);
     }
+    return (<div className="path">
+        {dirs.map((d) => <PathButton key={d.dir} dir={d.dir} fileName={d.fileName} cd={cd}
+            setSelected={setSelected} />)}
+    </div>);
 }
 
-class PathButton extends React.Component<{ path: string, fileName: string, cd: React.Dispatch<React.SetStateAction<string>> }> {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (<button onClick={(e) => {
-            this.props.cd(this.props.path);
-        }}>{this.props.fileName + " >"}</button>);
-    }
+const PathButton = ({ dir, fileName, cd, setSelected }) => {
+    const audioManager = useContext(MapAudioContext); 
+    return (<button onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }} onClick={() => {
+        cd(dir);
+        setSelected(null);
+        audioManager.playAudioElement("DEFAULT_SELECT");
+    }}>{fileName + " >"}</button>);
 }
 
-class DirectoryVisualiser extends React.Component<{ path: string, cd: React.Dispatch<React.SetStateAction<string>>, fs: FSModule, selected: File }> {
-    constructor(props) {
-        super(props);
+const DirectoryManageOption = ({ label, onClick }) => {
+    const audioManager = useContext(MapAudioContext); 
+    return (<div className="item" onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }} onClick={(e) => { 
+        audioManager.playAudioElement("DEFAULT_SELECT");
+        onClick(e); 
+    }}>
+        <button>{label}</button>
+    </div>);
+}
+
+const DirectoryVisualiser = ({ cwd, cd, fs, selected, setSelected }) => {
+    const [files, setFiles] = useState([] as string[]);
+
+    useEffect(() => {
+        updateFiles();
+    }, [cwd, fs]);
+
+    const updateFiles = () => {
+        if (fs.readFile) {
+            fs.readdir(cwd, (e, f) => {
+                if (e) { throw e; }
+                for (var i = 0; i < f.length; i++) {
+                    f[i] = path.join(cwd, f[i]);
+                }
+                setFiles(f);
+            });
+        }
     }
 
-    render() {
-        return (<div className="directory">
-            <div className="list">
+    const writeFiles = (files: File[]) => {
+        for (var file of files) {
+            const filename = file.name;
+            getDataUrl(file, (err, data) => {
+                if (err) { throw err; }
+                fs.writeFile(path.join(cwd, filename), data, (e) => {
+                    if (e) { throw e; }
+                    updateFiles();
+                });
+            });
+        }
+    }
 
+    return (<div className="directory" onDrop={(e) => {
+        e.preventDefault();
+        if (e.dataTransfer.items) {
+            console.log(e.dataTransfer.items)
+            var files = [];
+            [...e.dataTransfer.items].forEach((item) => {
+                if (item.kind === "file") {
+                    const file = item.getAsFile();
+                    files.push(file);
+                }
+            });
+            writeFiles(files as any);
+        }
+    }} onDragOver={(e) => { e.preventDefault(); }}>
+        <div className="list" onClick={(e) => {
+            if (e.target == document.querySelector(".list")) {
+                setSelected(null);
+            }
+        }}>
+            <div className="manage">
+                <DirectoryManageOption label="Create file" onClick={() => {
+                    const name = prompt("File name:"); // no more input boxes please
+                    const dir = path.join(cwd, name);
+                    if (name && (name as any).replaceAll(" ", "") != "") {
+                        fs.exists(dir, (exists) => {
+                            if (!exists) {
+                                fs.writeFile(dir, "", (e) => {
+                                    if (e) { throw e; }
+                                    updateFiles();
+                                });
+                            }
+                        });
+                    }
+                }} />
+                <DirectoryManageOption label="Create folder" onClick={() => {
+                    const name = prompt("Folder name:");
+                    const dir = path.join(cwd, name);
+                    console.log(dir)
+                    if (name && (name as any).replaceAll(" ", "") != "") {
+                        fs.exists(dir, (exists) => {
+                            if (!exists) {
+                                fs.mkdir(dir, "", (e) => {
+                                    if (e) { throw e; }
+                                    updateFiles();
+                                });
+                            }
+                        });
+                    }
+                }} />
+                <DirectoryManageOption label="Upload files" onClick={() => {
+                    inputFiles(true, (files) => { writeFiles(files); }); // inputFiles(this.writeFiles) will overwrite 'this'
+                }} />
+                <DirectoryManageOption label="Upload folder" onClick={() => {
+                    inputDirectory((files) => { writeFiles(files); });
+                }} />
+                <DirectoryManageOption label="Refresh" onClick={() => {
+                    updateFiles();
+                }} />
             </div>
-            <div className="property">
-                <h4>Properties</h4>
-                <p>File Name: {this.props.selected ? "" : "-"}</p>
+            {files.map((file) => <DirectoryItem key={file} dir={file} fs={fs} cd={cd} selected={selected} setSelected={setSelected} />)}
+        </div>
+        <div className="options">
+            <div id={selected ? "" : "hide"}>
+                <div className="manage">
+                    <DirectoryManageOption label="Download" onClick={() => {
+                        download(selected);
+                    }} />
+                    <DirectoryManageOption label="Delete" onClick={() => {
+                        rm(selected, (e) => {
+                            if (e) { throw e; }
+                            updateFiles();
+                        });
+                        setSelected(null);
+                    }} />
+                </div>
+                <FilePreview fs={fs} dir={selected} />
             </div>
-        </div>);
-    }
+        </div>
+    </div>);
 }
 
-class DirectoryItem extends React.Component<{ fileName: string }> {
-    constructor(props) {
-        super(props);
+const DirectoryItem = ({ dir, fs, cd, selected, setSelected }) => {
+    const audioManager = useContext(MapAudioContext);
+    const [size, setSize] = useState(0);
+    const [isFolder, setIsFolder] = useState(false);
+    const [data, setData] = useState("");
+
+    useEffect(() => {
+        fs.stat(dir, (e, stats) => {
+            if (e) { throw e; }
+            setSize(stats.isDirectory() ? 0 : stats.size);
+            setIsFolder(stats.isDirectory());
+            if (!stats.isDirectory()) {
+                fs.readFile(dir, (e, data) => {
+                    if (e) { throw e; }
+                    setData(data.toString());
+                });
+            }
+        });
+    });
+
+    const isSelected = () => {
+        return selected == dir;
     }
 
-    render() {
-        return (<div className="item">
-            <p>{this.props.fileName}</p>
-        </div>);
-    }
+    //@ts-ignore
+    return (<div className="item" active={isSelected().toString()}
+        onClick={() => {
+            audioManager.playAudioElement("DEFAULT_SELECT");
+            setSelected(dir);
+        }}
+        onDoubleClick={() => {
+            if (isFolder) {
+                cd(dir);
+                setSelected(null);
+            }
+        }}>
+        <img className="icon" src={getFileIcon(dir, isFolder, data)} />
+        <button onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }}>{getFileName(dir)}</button>
+        <p>{getFileKind(dir, isFolder)}</p>
+        <p>{size > 0 ? getFormattedSize(size) : ""}</p>
+    </div>);
+}
+
+const FilePreview = ({ fs, dir }: { fs: FSModule, dir: string }) => {
+    const [dataType, setDataType] = useState("File");
+    const [data, setData] = useState("");
+
+    useEffect(() => {
+        if (fs.readFile && dir) {
+            fs.stat(dir, (e, stats) => {
+                if (e) { throw e; }
+                if (stats.isDirectory()) {
+                    setDataType("Folder");
+                    return;
+                }
+                fs.readFile(dir, 'utf-8', (e, data) => {
+                    if (e) { throw e; }
+                    setData(data.toString());
+                    setDataType(getDataType(getFileExt(dir)));
+                })
+            })
+        }
+    }, [fs, dir]);
+
+    return (<div className="preview">
+        <p className="text" id={dataType == "File" ? "" : "hide"}>
+            {dataType == "File" ? dataUrlToUtf8(data) : ""}
+        </p>
+        <img className="image" id={dataType == "Image" ? "" : "hide"}
+            src={dataType == "Image" ? data : ""} />
+        <audio controls className="audio" id={dataType == "Audio" ? "" : "hide"}
+            src={dataType == "Audio" ? data : ""} />
+        <video controls className="video" id={dataType == "Video" ? "" : "hide"}
+            src={dataType == "Video" ? data : ""} />
+    </div>);
 }
 
 export default function FilesVisualiser() {
     var [cwd, cd] = useState(ROOT_DIRECTORY);
+    var [selected, setSelected] = useState(null as string);
     var fs = useContext(FileContext);
 
     return (<div className="filesvisualiser">
-        <PathVisualiser path={cwd} cd={cd} />
-        <DirectoryVisualiser fs={fs} path={cwd} cd={cd} selected={null} />
+        <PathVisualiser dir={cwd} cd={cd} setSelected={setSelected} />
+        <DirectoryVisualiser fs={fs} cwd={cwd} cd={cd} selected={selected} setSelected={setSelected} />
     </div>);
 }

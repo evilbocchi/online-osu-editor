@@ -30,7 +30,7 @@
     },
     "include": [
         "src"
-    ],
+, "src/entry-server.tsx", "entry-server.tsx"    ],
     "references": [
         {
             "path": "./tsconfig.node.json"

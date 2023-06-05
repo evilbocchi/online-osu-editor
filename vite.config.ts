@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import vavite from 'vavite';
 
 import path from "node:path";
 
@@ -10,5 +11,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src/'),
     }
   },
-  plugins: [react()],
+  plugins: [react(), vavite({
+    serverEntry: "/src/entry-server.tsx",
+    serveClientAssetsInDev: true,
+    // Don't reload when dynamically imported dependencies change
+    reloadOn: "static-deps-change",
+  }),],
 })

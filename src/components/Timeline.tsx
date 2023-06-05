@@ -1,58 +1,25 @@
-import React from "react";
-import { getBPM, getTrack, AppState } from "@/Editor";
+import { useContext, useEffect } from "react";
+import { MapAudioContext } from "@/contexts/AudioManager";
+import { getBPM } from "@/utils/hitobject";
 
-interface SpeedOptionProps { state: AppState, setStateKey, speed: number }
+const SpeedOption = ({ speed }) => {
+    const context = useContext(MapAudioContext);
 
-class SpeedOption extends React.Component<SpeedOptionProps, {}> {
-
-    constructor(props: SpeedOptionProps) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div className="button" id={this.props.speed.toString()}
-                //@ts-ignore
-                active={(this.props.state.currentPlaybackSpeed == this.props.speed).toString()}
-                onClick={(e) => this.props.setStateKey("currentPlaybackSpeed", this.props.speed)}>
-                <button className="buttonlabel">{this.props.speed * 100}%</button>
-            </div>
-        );
-    }
+    return (
+        <div className="button" id={speed.toString()}
+            //@ts-ignore
+            active={(context.trackSpeed == speed).toString()}
+            onClick={() => context.setTrackSpeed(speed)}>
+            <button className="buttonlabel">{speed * 100}%</button>
+        </div>
+    );
 }
 
-interface TimelineProps { state: AppState, setStateKey: any }
+const Timeline = ({ }) => {
 
-export default class Timeline extends React.Component<TimelineProps, {}> {
-    constructor(props: TimelineProps) {
-        super(props);
-    }
+    const mapAudioContext = useContext(MapAudioContext);
 
-    update: NodeJS.Timer;
-
-    componentDidMount() {
-        var track = getTrack();
-        var ctlabel = document.querySelector(".ctlabel");
-        var cblabel = document.querySelector(".cblabel");
-        var indicator: HTMLDivElement | null = document.querySelector(".indicator");
-
-        this.update = setInterval(() => {
-            var currentTime = track ? Math.floor(track.currentTime * 1000) : 0;
-            var length = track ? (track.duration ? track.duration * 1000 : 1) : 1;
-            if (ctlabel && cblabel && indicator) {
-                ctlabel.innerHTML = this.formatTime(currentTime);
-                cblabel.innerHTML = getBPM(this.props.state.mapSettings.timingPoints, currentTime).toString() + " BPM";
-                indicator.style.margin = "0 0 0 " + ((currentTime / length * 100).toString()) + "%";
-            }
-
-        }, 1);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.update);
-    }
-
-    formatTime(s: number) {
+    const formatTime = (s: number) => {
         function pad(n: number, z?: number): string {
             z = z || 2;
             return ('00' + n).slice(-z);
@@ -65,8 +32,28 @@ export default class Timeline extends React.Component<TimelineProps, {}> {
         return (s > 99 ? s : pad(s)) + ':' + pad(secs) + '.' + pad(ms, 3);
     }
 
-    timelineMove(e: MouseEvent) {
-        var track = getTrack();
+    useEffect(() => {
+        const track = mapAudioContext.getAudioElement("track");
+        const ctlabel = document.querySelector(".ctlabel");
+        const cblabel = document.querySelector(".cblabel");
+        const indicator: HTMLDivElement | null = document.querySelector(".indicator");
+
+        const update = setInterval(() => {
+            const currentTime = track ? Math.floor(track.currentTime * 1000) : 0;
+            const length = track ? (track.duration ? track.duration * 1000 : 1) : 1;
+            if (ctlabel && cblabel && indicator) {
+                ctlabel.innerHTML = formatTime(currentTime);
+                cblabel.innerHTML = getBPM(mapAudioContext.timingPoints, track.currentTime).toString() + " BPM";
+                indicator.style.margin = "0 0 0 " + ((currentTime / length * 100).toString()) + "%";
+            }
+
+        }, 1);
+        return function cleanup() { clearInterval(update); }
+    });
+    
+
+    const timelineMove = (e: MouseEvent) => {
+        const track = mapAudioContext.getAudioElement("track");
         if (track) {
             var line = document.querySelector(".main .line");
             if (line) {
@@ -78,40 +65,40 @@ export default class Timeline extends React.Component<TimelineProps, {}> {
         }
     }
 
-    render() {
-        return (<div className="timeline">
+    return (<div className="timeline">
+        <div className="labels">
+            <h3 className="ctlabel" title="Some browsers may round/adjust the currentTime of audio elements, and this value may be imprecise and inaccurate."></h3>
+            <h4 className="cblabel"></h4>
+        </div>
+        <div className="main" onMouseMove={(e) => {
+            if (e.buttons > 0) {
+                timelineMove(e as any);
+            }
+        }} onClick={timelineMove as any}>
+            <div className="line">
+                <div className="indicator" />
+                <div className="left ball" />
+                <div className="right ball" />
+            </div>
+        </div>
+        <div className="playbackoptions">
             <div className="labels">
-                <h3 className="ctlabel" title="Some browsers may round/adjust the currentTime of audio elements, and this value may be imprecise and inaccurate."></h3>
-                <h4 className="cblabel"></h4>
-            </div>
-            <div className="main" onMouseMove={(e) => {
-                if (e.buttons > 0) {
-                    this.timelineMove(e as any);
-                }
-            }} onClick={this.timelineMove as any}>
-                <div className="line">
-                    <div className="indicator" />
-                    <div className="left ball" />
-                    <div className="right ball" />
+                <p>Playback speed</p>
+                <div className="speedoptions">
+                    <SpeedOption speed={0.25} />
+                    <SpeedOption speed={0.5} />
+                    <SpeedOption speed={0.75}/>
+                    <SpeedOption speed={1} />
                 </div>
             </div>
-            <div className="playbackoptions">
-                <div className="labels">
-                    <p>Playback speed</p>
-                    <div className="speedoptions">
-                        <SpeedOption speed={0.25} state={this.props.state} setStateKey={this.props.setStateKey} />
-                        <SpeedOption speed={0.5} state={this.props.state} setStateKey={this.props.setStateKey} />
-                        <SpeedOption speed={0.75} state={this.props.state} setStateKey={this.props.setStateKey} />
-                        <SpeedOption speed={1} state={this.props.state} setStateKey={this.props.setStateKey} />
-                    </div>
-                </div>
-                <div className="button" id="playbutton"
-                    onClick={(e) => {
-                        this.props.setStateKey("isPlaying", !this.props.state.isPlaying);
-                    }}>
-                    <button className="buttonlabel">{this.props.state.isPlaying == true ? "Stop" : "Play"}</button>
-                </div>
+            <div className="button" id="playbutton"
+                onClick={() => {
+                    mapAudioContext.setPlaying(!mapAudioContext.isPlaying);
+                }}>
+                <button className="buttonlabel">{mapAudioContext.isPlaying == true ? "Stop" : "Play"}</button>
             </div>
-        </div>);
-    }
+        </div>
+    </div>);
 }
+
+export default Timeline;

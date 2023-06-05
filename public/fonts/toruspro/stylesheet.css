@@ -1,0 +1,312 @@
+@font-face {
+    font-family: 'Torus Biline';
+    src: url('TorusBiline-Bold.eot');
+    src: local('Torus Biline Bold'), local('TorusBiline-Bold'),
+        url('TorusBiline-Bold.eot?#iefix') format('embedded-opentype'),
+        url('TorusBiline-Bold.woff2') format('woff2'),
+        url('TorusBiline-Bold.woff') format('woff'),
+        url('TorusBiline-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Biline';
+    src: url('TorusBiline-Heavy.eot');
+    src: local('Torus Biline Heavy'), local('TorusBiline-Heavy'),
+        url('TorusBiline-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('TorusBiline-Heavy.woff2') format('woff2'),
+        url('TorusBiline-Heavy.woff') format('woff'),
+        url('TorusBiline-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Inline';
+    src: url('TorusInline-Thin.eot');
+    src: local('Torus Inline Thin'), local('TorusInline-Thin'),
+        url('TorusInline-Thin.eot?#iefix') format('embedded-opentype'),
+        url('TorusInline-Thin.woff2') format('woff2'),
+        url('TorusInline-Thin.woff') format('woff'),
+        url('TorusInline-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Inline Semi';
+    src: url('TorusInline-SemiBold.eot');
+    src: local('Torus Inline Semi Bold'), local('TorusInline-SemiBold'),
+        url('TorusInline-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('TorusInline-SemiBold.woff2') format('woff2'),
+        url('TorusInline-SemiBold.woff') format('woff'),
+        url('TorusInline-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Notched';
+    src: url('TorusNotched-Regular.eot');
+    src: local('Torus Notched'), local('TorusNotched-Regular'),
+        url('TorusNotched-Regular.eot?#iefix') format('embedded-opentype'),
+        url('TorusNotched-Regular.woff2') format('woff2'),
+        url('TorusNotched-Regular.woff') format('woff'),
+        url('TorusNotched-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Notched';
+    src: url('TorusNotched-Light.eot');
+    src: local('Torus Notched Light'), local('TorusNotched-Light'),
+        url('TorusNotched-Light.eot?#iefix') format('embedded-opentype'),
+        url('TorusNotched-Light.woff2') format('woff2'),
+        url('TorusNotched-Light.woff') format('woff'),
+        url('TorusNotched-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Notched Semi';
+    src: url('TorusNotched-SemiBold.eot');
+    src: local('Torus Notched Semi Bold'), local('TorusNotched-SemiBold'),
+        url('TorusNotched-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('TorusNotched-SemiBold.woff2') format('woff2'),
+        url('TorusNotched-SemiBold.woff') format('woff'),
+        url('TorusNotched-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Inline';
+    src: url('TorusInline-Light.eot');
+    src: local('Torus Inline Light'), local('TorusInline-Light'),
+        url('TorusInline-Light.eot?#iefix') format('embedded-opentype'),
+        url('TorusInline-Light.woff2') format('woff2'),
+        url('TorusInline-Light.woff') format('woff'),
+        url('TorusInline-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Inline';
+    src: url('TorusInline-Bold.eot');
+    src: local('Torus Inline Bold'), local('TorusInline-Bold'),
+        url('TorusInline-Bold.eot?#iefix') format('embedded-opentype'),
+        url('TorusInline-Bold.woff2') format('woff2'),
+        url('TorusInline-Bold.woff') format('woff'),
+        url('TorusInline-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Notched';
+    src: url('TorusNotched-Heavy.eot');
+    src: local('Torus Notched Heavy'), local('TorusNotched-Heavy'),
+        url('TorusNotched-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('TorusNotched-Heavy.woff2') format('woff2'),
+        url('TorusNotched-Heavy.woff') format('woff'),
+        url('TorusNotched-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Notched';
+    src: url('TorusNotched-Bold.eot');
+    src: local('Torus Notched Bold'), local('TorusNotched-Bold'),
+        url('TorusNotched-Bold.eot?#iefix') format('embedded-opentype'),
+        url('TorusNotched-Bold.woff2') format('woff2'),
+        url('TorusNotched-Bold.woff') format('woff'),
+        url('TorusNotched-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Outline';
+    src: url('TorusOutline-Bold.eot');
+    src: local('Torus Outline Bold'), local('TorusOutline-Bold'),
+        url('TorusOutline-Bold.eot?#iefix') format('embedded-opentype'),
+        url('TorusOutline-Bold.woff2') format('woff2'),
+        url('TorusOutline-Bold.woff') format('woff'),
+        url('TorusOutline-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Inline';
+    src: url('TorusInline-Heavy.eot');
+    src: local('Torus Inline Heavy'), local('TorusInline-Heavy'),
+        url('TorusInline-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('TorusInline-Heavy.woff2') format('woff2'),
+        url('TorusInline-Heavy.woff') format('woff'),
+        url('TorusInline-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Biline';
+    src: url('TorusBiline-Thin.eot');
+    src: local('Torus Biline Thin'), local('TorusBiline-Thin'),
+        url('TorusBiline-Thin.eot?#iefix') format('embedded-opentype'),
+        url('TorusBiline-Thin.woff2') format('woff2'),
+        url('TorusBiline-Thin.woff') format('woff'),
+        url('TorusBiline-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Biline Semi';
+    src: url('TorusBiline-SemiBold.eot');
+    src: local('Torus Biline Semi Bold'), local('TorusBiline-SemiBold'),
+        url('TorusBiline-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('TorusBiline-SemiBold.woff2') format('woff2'),
+        url('TorusBiline-SemiBold.woff') format('woff'),
+        url('TorusBiline-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Notched';
+    src: url('TorusNotched-Thin.eot');
+    src: local('Torus Notched Thin'), local('TorusNotched-Thin'),
+        url('TorusNotched-Thin.eot?#iefix') format('embedded-opentype'),
+        url('TorusNotched-Thin.woff2') format('woff2'),
+        url('TorusNotched-Thin.woff') format('woff'),
+        url('TorusNotched-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Biline';
+    src: url('TorusBiline-Light.eot');
+    src: local('Torus Biline Light'), local('TorusBiline-Light'),
+        url('TorusBiline-Light.eot?#iefix') format('embedded-opentype'),
+        url('TorusBiline-Light.woff2') format('woff2'),
+        url('TorusBiline-Light.woff') format('woff'),
+        url('TorusBiline-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Biline';
+    src: url('TorusBiline-Regular.eot');
+    src: local('Torus Biline'), local('TorusBiline-Regular'),
+        url('TorusBiline-Regular.eot?#iefix') format('embedded-opentype'),
+        url('TorusBiline-Regular.woff2') format('woff2'),
+        url('TorusBiline-Regular.woff') format('woff'),
+        url('TorusBiline-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Inline';
+    src: url('TorusInline-Regular.eot');
+    src: local('Torus Inline'), local('TorusInline-Regular'),
+        url('TorusInline-Regular.eot?#iefix') format('embedded-opentype'),
+        url('TorusInline-Regular.woff2') format('woff2'),
+        url('TorusInline-Regular.woff') format('woff'),
+        url('TorusInline-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Outline';
+    src: url('TorusOutline-Regular.eot');
+    src: local('Torus Outline'), local('TorusOutline-Regular'),
+        url('TorusOutline-Regular.eot?#iefix') format('embedded-opentype'),
+        url('TorusOutline-Regular.woff2') format('woff2'),
+        url('TorusOutline-Regular.woff') format('woff'),
+        url('TorusOutline-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Outline';
+    src: url('TorusOutline-Light.eot');
+    src: local('Torus Outline Light'), local('TorusOutline-Light'),
+        url('TorusOutline-Light.eot?#iefix') format('embedded-opentype'),
+        url('TorusOutline-Light.woff2') format('woff2'),
+        url('TorusOutline-Light.woff') format('woff'),
+        url('TorusOutline-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Outline';
+    src: url('TorusOutline-Heavy.eot');
+    src: local('Torus Outline Heavy'), local('TorusOutline-Heavy'),
+        url('TorusOutline-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('TorusOutline-Heavy.woff2') format('woff2'),
+        url('TorusOutline-Heavy.woff') format('woff'),
+        url('TorusOutline-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Outline Semi';
+    src: url('TorusOutline-SemiBold.eot');
+    src: local('Torus Outline Semi Bold'), local('TorusOutline-SemiBold'),
+        url('TorusOutline-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('TorusOutline-SemiBold.woff2') format('woff2'),
+        url('TorusOutline-SemiBold.woff') format('woff'),
+        url('TorusOutline-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Torus Outline';
+    src: url('TorusOutline-Thin.eot');
+    src: local('Torus Outline Thin'), local('TorusOutline-Thin'),
+        url('TorusOutline-Thin.eot?#iefix') format('embedded-opentype'),
+        url('TorusOutline-Thin.woff2') format('woff2'),
+        url('TorusOutline-Thin.woff') format('woff'),
+        url('TorusOutline-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+

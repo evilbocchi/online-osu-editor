@@ -1,143 +1,76 @@
-import React from 'react';
-import { FSModule } from 'browserfs/dist/node/core/FS';
+import { useContext, useEffect, useState } from 'react';
 
-import { autoBind } from '@/App';
 import Navbar from '@/components/Navbar';
 import Playfield from '@/components/Playfield';
 import Timeline from '@/components/Timeline';
 
 import { FileContext } from '@/contexts/FileSystem';
+import { MapConfig } from '@/contexts/MapManager';
+import AudioManager from '@/contexts/AudioManager';
 
-import '@/assets/fonts/TorusPro/TorusPro.css';
+import { parseIni } from '@/utils/ini';
+import { fetchResource, mkdirs, path } from '@/utils/filesystem';
+import { dataUrlToUtf8 } from '@/utils/file';
 
+const Editor = () => {
+  const fs = useContext(FileContext);
+  const [currentSection, setCurrentSection] = useState("setup");
+  const [isLoading, setLoading] = useState(true);
 
-export function getBPM(timingPoints: [TimingPoint], time: number): number {
-  var bpm = 0;
-  for (var i = 0; i < timingPoints.length; i++) {
-    if (time >= timingPoints[i].time) {
-      bpm = timingPoints[i].bpm;
-    }
-    else {
-      return bpm;
-    }
-  }
-  return bpm;
-}
+  const defaultFiles = () => {
+    console.log("Enforcing default files");
 
-export function getTrack(): HTMLAudioElement {
-  return (document.querySelector(".track") as any);
-}
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/defaultfilesindex");
 
-export function loadTrack(): HTMLAudioElement {
-  var track = getTrack();
-  track.load();
-  track.preservesPitch = false;
-  return track;
-}
-
-export interface TimingPoint {
-  time: number,
-  bpm: number,
-  velocity: number,
-  volume: number,
-  soundbank: string,
-  soundbankno: number
-}
-
-export interface MapSettings {
-  background: string,
-  audio: string,
-  timingPoints: [TimingPoint],
-}
-
-export interface AppState {
-  currentSection: string;
-  currentPlaybackSpeed: number,
-  isPlaying: boolean,
-  mapSettings: MapSettings
-}
-
-export default class Editor extends React.Component {
-
-  static contextType = FileContext;
-
-  constructor(props) {
-    super(props);
-    autoBind(this);
-  }
-
-  state: AppState = {
-    currentSection: "files",
-    currentPlaybackSpeed: 1,
-    isPlaying: false,
-    mapSettings: {
-      background: "",
-      audio: "/silence.mp3",
-      timingPoints: [{ time: 0, bpm: 0, velocity: 0, volume: 0, soundbank: "normal", soundbankno: 1 }],
-    }
-  }
-
-  update: NodeJS.Timer | null = null;
-
-  componentDidMount() {
-    if (false) {
-      const fs = this.context as FSModule;
-      var enforceDefaultFiles = false;
-
-      fs.readFile("/options.ini", (e) => {
-        if (e) {
-          enforceDefaultFiles = true;
+    // extract this to method later
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var filesIndex = JSON.parse(xhr.responseText);
+        var filesWritten = 0;
+        for (var i = 0; i < filesIndex.length; i++) {
+          const file = filesIndex[i];
+          fetchResource(file, (err, data) => {
+            if (err) { throw err; }
+            const dir = path.normalize(file.replace("defaultuserfiles", "").replaceAll("\\", "/"));
+            mkdirs(dir, (e) => {
+              if (e) {
+                throw e;
+              }
+              fs.writeFile(dir, data, (e) => {
+                if (e) { throw e; }
+                filesWritten++;
+                if (filesWritten == filesIndex.length) {
+                  setLoading(false);
+                  location.reload();
+                }
+              });
+            })
+          });
         }
+      }
+    };
+    xhr.send();
+  }
+
+  useEffect(() => {
+    if (isLoading && fs.readFile) {
+      fs.readFile("/options.ini", (e, data) => {
+        if (e) {
+          defaultFiles();
+          return;
+        }
+        const p = parseIni(dataUrlToUtf8(data.toString()));
+        if (p.General && (p.General as any).EnforceDefaultFiles) {
+          defaultFiles();
+          return;
+        }
+        setLoading(false);
       });
-
-      if (enforceDefaultFiles) {
-        console.log("Enforcing default files");
-      }
     }
+  }, [fs]);
 
-    var track = loadTrack();
-    this.update = setInterval(() => {
-      if (track.paused && this.state.isPlaying) {
-        track.play();
-      }
-      if (!track.paused && !this.state.isPlaying) {
-        track.pause();
-      }
-      track.playbackRate = this.state.currentPlaybackSpeed as number;
-    }, 5);
-
-  }
-
-  componentWillUnmount() {
-    if (this.update) {
-      clearInterval(this.update);
-    }
-  }
-
-  setStateKey = (key, value) => {
-    var newState = this.state;
-    newState[key] = value;
-    this.setState(newState);
-    console.log(newState);
-  }
-
-  setMapSetting(key, value) {
-    var newMapSettings = this.state.mapSettings;
-    newMapSettings[key] = value;
-    this.setStateKey("mapSettings", newMapSettings);
-  }
-
-  setCurrentSection(section: string) {
-    this.setStateKey("currentSection", section);
-  }
-
-  save() {
-    //localStorage.setItem("background", this.state.mapSettings.background);
-    console.log("Saved map settings");
-    //console.log(localStorage);
-  }
-
-  showMessage(message: string, duration: number) {
+  const showMessage = (message: string, duration: number) => {
     var popup = document.querySelector(".popupwindow") as HTMLDivElement;
     var text = document.querySelector(".popupwindow .text") as HTMLParagraphElement;
     if (popup && text) {
@@ -151,20 +84,26 @@ export default class Editor extends React.Component {
     }
   }
 
-  render() {
-    return (
-      <>
-        <div className="popupwindow">
-          <h4>EDITOR</h4>
-          <p className="text">Example</p>
-        </div>
-        <audio className="track" src={this.state.mapSettings.audio} />
-        <Timeline state={this.state} setStateKey={this.setStateKey} />
-        <Navbar currentSection={this.state.currentSection} setCurrentSection={this.setCurrentSection}
-          save={this.save} showMessage={this.showMessage} />
-        <Playfield state={this.state} setStateKey={this.setStateKey} mapSettings={this.state.mapSettings} setMapSetting={this.setMapSetting} showMessage={this.showMessage} />
-      </>
-    );
-  }
-
+  return (
+    <MapConfig>
+      <AudioManager>
+          <div className="preventlandscape"><h1>Please rotate your device to Portrait mode.</h1></div>
+          <div className="load" id={isLoading ? "" : "hide"}>
+            <h1>Online Editor for osu!</h1>
+            <div className="center">
+              <h2>Loading...</h2>
+              <h4>This may take a few seconds.</h4></div>
+          </div>
+          <div className="popupwindow">
+            <h4>EDITOR</h4>
+            <p className="text">Example</p>
+          </div>
+          <Timeline />
+          <Navbar currentSection={currentSection} setCurrentSection={setCurrentSection} showMessage={showMessage} />
+          <Playfield currentSection={currentSection} showMessage={showMessage} />
+      </AudioManager>
+    </MapConfig>
+  );
 }
+
+export default Editor;
