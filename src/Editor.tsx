@@ -6,15 +6,23 @@ import Timeline from '@/components/Timeline';
 
 import { FileContext } from '@/contexts/FileSystem';
 import { MapConfig } from '@/contexts/MapManager';
-import AudioManager from '@/contexts/AudioManager';
+import AudioManager, { MapAudioContext } from '@/contexts/AudioManager';
 
 import { parseIni } from '@/utils/ini';
 import { fetchResource, mkdirs, path } from '@/utils/filesystem';
 import { dataUrlToUtf8 } from '@/utils/file';
 
+const SelectAudio = ({ children }) => {
+  const audioManager = useContext(MapAudioContext);
+  return (<div onMouseDown={() => { audioManager.playSound("CURSOR_TAP") }}
+    onMouseUp={() => { audioManager.playSound("DESELECT") }}>
+    {children}
+  </div>)
+}
+
 const Editor = () => {
   const fs = useContext(FileContext);
-  const [currentSection, setCurrentSection] = useState("setup");
+  const [currentSection, setCurrentSection] = useState("timing");
   const [isLoading, setLoading] = useState(true);
 
   const defaultFiles = () => {
@@ -87,6 +95,7 @@ const Editor = () => {
   return (
     <MapConfig>
       <AudioManager>
+        <SelectAudio>
           <div className="preventlandscape"><h1>Please rotate your device to Portrait mode.</h1></div>
           <div className="load" id={isLoading ? "" : "hide"}>
             <h1>Online Editor for osu!</h1>
@@ -101,6 +110,7 @@ const Editor = () => {
           <Timeline />
           <Navbar currentSection={currentSection} setCurrentSection={setCurrentSection} showMessage={showMessage} />
           <Playfield currentSection={currentSection} showMessage={showMessage} />
+        </SelectAudio>
       </AudioManager>
     </MapConfig>
   );

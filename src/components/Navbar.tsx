@@ -3,12 +3,12 @@ import { MapAudioContext } from "@/contexts/AudioManager";
 
 function NavbarDropdownOption({ label, type, onClick }) {
     const audioManager = useContext(MapAudioContext);
-    return (<a type={type} onClick={onClick} onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }}>{label}</a>)
+    return (<a type={type} onClick={onClick} onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>{label}</a>)
 }
 
 function NavbarDropdown({ label, options }) {
     const audioManager = useContext(MapAudioContext);
-    return (<div className="dropdown" onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }}>
+    return (<div className="dropdown" onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>
         <button className="dropbtn">{label}</button>
         <div className="dropdown-content">{options}</div>
     </div>)
@@ -20,8 +20,8 @@ const NavbarTabSelect = ({ id, label, currentSection, setCurrentSection }) => {
         // @ts-ignore
         <div className="button" id={id} active={(currentSection == id).toString()} onClick={() => {
             setCurrentSection(id);
-            audioManager.playAudioElement("TABSELECT_SELECT");
-        }} onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }}>
+            audioManager.playSound("TABSELECT_SELECT");
+        }} onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>
             <button className="buttonlabel">{label}</button>
         </div>
     );

@@ -1,16 +1,11 @@
-.input[type="range"] {
-	font-size: 1.5rem;
-	width: 12.5em;
-}
-
 input[type="range"] {
 	color: #66FFCC;
 	--thumb-width: 3vw;
 	--thumb-height: 1vw;
 	--track-height: 0.2vw;
-	--track-color: rgba(0, 0, 0, 0.2);
-	--brightness-hover: 180%;
-	--brightness-down: 80%;
+	--track-color: #00000033;
+	--brightness-hover: 115%;
+	--brightness-active: 180%;
 	--clip-edges: 0.125em;
 }
 
@@ -71,6 +66,15 @@ input[type="range"]:hover::-webkit-slider-thumb {
 	filter: brightness(var(--brightness-hover));
 }
 
+input[type="range"]:active::-webkit-slider-thumb {
+	filter: brightness(var(--brightness-active));
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	background: linear-gradient(var(--track-color) 0 0) scroll no-repeat center /
+		100% calc(var(--track-height) + 1px);
+}
+
 input[type="range"]::-moz-range-thumb {
 	background: currentColor;
 	border: 0;
@@ -78,9 +82,30 @@ input[type="range"]::-moz-range-thumb {
 	border-radius: var(--thumb-width, var(--thumb-height));
 }
 
+input[type="range"]::-moz-range-track {
+	width: 100%;
+	background: var(--track-color);
+}
+
+input[type="range"]::-moz-range-progress {
+	appearance: none;
+	background: currentColor;
+	transition-delay: 30ms;
+}
+
 input[type="range"]:hover::-moz-range-thumb,
 input[type="range"]:hover::-moz-range-progress {
 	filter: brightness(var(--brightness-hover));
+}
+
+input[type="range"]:active::-moz-range-thumb,
+input[type="range"]:active::-moz-range-progress {
+	filter: brightness(var(--brightness-active));
+}
+
+input[type="range"]::-moz-range-thumb,
+input[type="range"]::-moz-range-progress {
+	filter: brightness(100%);
 }
 
 input[type="range"]::-moz-range-progress {

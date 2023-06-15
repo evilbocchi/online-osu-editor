@@ -4,7 +4,11 @@ export const getRelativePath = (mapFolderDir: string, fileDir: string) => {
     return path.relative(mapFolderDir, fileDir);
 }
 
-// these are the best helper functions in the world
+export const getMapFileName = (mapConfig: any): string => {
+    return getArtist(mapConfig)+" - "+getTitle(mapConfig)+" ("+mapConfig.creator+") ["+mapConfig.difficulty+"].osu";
+}
+
+// these are the best helper functions in the world (real)
 export const getArtist = (mapConfig: any): string => {
     return mapConfig.artist == "" ? mapConfig.artistUnicode : mapConfig.artist;
 }

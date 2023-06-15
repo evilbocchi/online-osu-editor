@@ -53,7 +53,7 @@ walk("public/defaultuserfiles", (err, results: [string]) => {
 		results[i] = path.normalize(results[i].substring(results[i].indexOf("defaultuserfiles")));
 	}
 
-	app.get("/defaultfilesindex", (req, res) => {
+	app.get("/defaultfilesindex", (_req, res) => {
 		res.send(results);
 	});
 })

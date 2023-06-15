@@ -27,19 +27,19 @@ const PathVisualiser = ({ dir, cd, setSelected }) => {
 }
 
 const PathButton = ({ dir, fileName, cd, setSelected }) => {
-    const audioManager = useContext(MapAudioContext); 
-    return (<button onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }} onClick={() => {
+    const audioManager = useContext(MapAudioContext);
+    return (<button onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }} onClick={() => {
         cd(dir);
         setSelected(null);
-        audioManager.playAudioElement("DEFAULT_SELECT");
+        audioManager.playSound("DEFAULT_SELECT");
     }}>{fileName + " >"}</button>);
 }
 
 const DirectoryManageOption = ({ label, onClick }) => {
-    const audioManager = useContext(MapAudioContext); 
-    return (<div className="item" onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }} onClick={(e) => { 
-        audioManager.playAudioElement("DEFAULT_SELECT");
-        onClick(e); 
+    const audioManager = useContext(MapAudioContext);
+    return (<div className="item" onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }} onClick={(e) => {
+        audioManager.playSound("DEFAULT_SELECT");
+        onClick(e);
     }}>
         <button>{label}</button>
     </div>);
@@ -166,12 +166,12 @@ const DirectoryItem = ({ dir, fs, cd, selected, setSelected }) => {
 
     useEffect(() => {
         fs.stat(dir, (e, stats) => {
-            if (e) { throw e; }
+            if (e) { return; } // this kept blaring Error: ENOENT: No such file or directory., '/'
             setSize(stats.isDirectory() ? 0 : stats.size);
             setIsFolder(stats.isDirectory());
             if (!stats.isDirectory()) {
                 fs.readFile(dir, (e, data) => {
-                    if (e) { throw e; }
+                    if (e) { return; } // i dont know why this errors and i give up
                     setData(data.toString());
                 });
             }
@@ -185,7 +185,7 @@ const DirectoryItem = ({ dir, fs, cd, selected, setSelected }) => {
     //@ts-ignore
     return (<div className="item" active={isSelected().toString()}
         onClick={() => {
-            audioManager.playAudioElement("DEFAULT_SELECT");
+            audioManager.playSound("DEFAULT_SELECT");
             setSelected(dir);
         }}
         onDoubleClick={() => {
@@ -195,7 +195,7 @@ const DirectoryItem = ({ dir, fs, cd, selected, setSelected }) => {
             }
         }}>
         <img className="icon" src={getFileIcon(dir, isFolder, data)} />
-        <button onMouseEnter={() => { audioManager.playAudioElement("DEFAULT_HOVER"); }}>{getFileName(dir)}</button>
+        <button onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>{getFileName(dir)}</button>
         <p>{getFileKind(dir, isFolder)}</p>
         <p>{size > 0 ? getFormattedSize(size) : ""}</p>
     </div>);

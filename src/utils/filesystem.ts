@@ -48,6 +48,7 @@ export const rm = (dir: string, cb?: (err: Error) => void) => {
                 }
                 var removed = 0;
                 for (var i = 0; i < files.length; i++) {
+                    console.log(path.join(dir, files[i]))
                     rm(path.join(dir, files[i]), (e) => {
                         if (e) {
                             cb(e);
@@ -56,10 +57,9 @@ export const rm = (dir: string, cb?: (err: Error) => void) => {
                         removed++;
                         if (removed == files.length) {
                             fs.rmdir(dir, cb);
-                            cb(e);
                             return;
                         }
-                    })
+                    });
                 }
             })
         }

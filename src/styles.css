@@ -68,7 +68,13 @@ body {
 }
 
 .navbar {
-  overflow: hidden;
+  background-color: #394642;
+  position: fixed;
+  width: 100%;
+  height: 2vw;
+  top: 0;
+  left: 0;
+  z-index: 99;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -92,12 +98,17 @@ body {
 .navbar .dropdown,
 .navbar .button,
 .playbackoptions .button {
+  position: relative;
   float: left;
-  overflow: hidden;
   background-color: #45544F;
   margin: 0;
-  padding: 0.35vw 1vw 0.35vw 1vw;
+  padding: 0 1vw 0 1vw;
   transition: background-color 0.1s;
+}
+
+.navbar .dropdown,
+.navbar .button {
+  height: 2vw;
 }
 
 .navbar .dropdown:hover {
@@ -113,11 +124,11 @@ body {
 .navbar .dropdown-content {
   display: none;
   position: absolute;
-  margin: 0.35vw 0 0 -1vw;
+  margin: 0 0 0 -1vw;
   font-size: 0.85vw;
-  min-width: 6vw;
   background-color: #45544F;
-  z-index: 8;
+  white-space: nowrap;
+  z-index: 69;
 }
 
 .navbar .dropdown-content a {
@@ -161,6 +172,7 @@ body {
   background-color: #1F2E29;
   height: 10%;
   font-size: 0.925vw;
+  z-index: 5;
 }
 
 .sectionnavbar .title {
@@ -218,19 +230,33 @@ body {
   font-weight: bold;
 }
 
+#setup .sectionnavbar {
+  position: fixed;
+  width: 100%;
+  height: calc(14vw - 2px);
+  top: 2vw;
+  left: 0;
+  overflow: hidden;
+}
+
+#files .sectionnavbar {
+  margin: 2vw 0 0 0;
+}
+
 .sectionnavbar .setbg {
   background-color: #1E2422;
   text-align: center;
-  padding: 2.25% 0 2.25% 0;
+  height: 9vw;
   position: relative;
   overflow: hidden;
 }
 
 .bg {
   position: absolute;
-  margin: -45% 0 0 -50%;
+  top: -25vw;
+  left: 0;
   width: 100%;
-  z-index: 1;
+  z-index: 3;
 }
 
 .bg[src="/default-bg.jpg"],
@@ -241,17 +267,18 @@ body {
 }
 
 .setbg p {
+  position: absolute;
+  width: 100%;
+  top: 2.5vw;
   font-size: 1.1vw;
 }
 
-.setbg:hover {
-  cursor: pointer;
-}
-
 .content {
+  position: relative;
   width: 90vw;
   margin: 0 0 0 5vw;
   font-size: 0.95vw;
+  z-index: 1;
 }
 
 .content .emptyspace {
@@ -259,31 +286,75 @@ body {
   height: 5vw;
 }
 
-.option {
+
+#setup .content {
+  margin: 18vw 0 0 5vw;
+}
+
+.option, .miscoption {
   display: flex;
   align-items: center;
-  background-color: #222A27;
+  background-color: transparent;
   border-radius: 1vw;
-  width: 100%;
+  width: 90vw;
+  min-height: 2.75vw;
   overflow: hidden;
   white-space: nowrap;
   margin: 0 0 0.5vw 0;
-  min-height: 2.75vw;
   font-size: 0.85vw;
 }
 
+.miscoption {
+  justify-content: space-between;
+  overflow: visible;
+  width: 80%;
+  min-height: auto;
+  margin: 0.6vw 0 -0.4vw 10%;
+}
+
+.option .wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  background-color: #2E3835;
+}
+
+.wrapper .main {
+  display: flex;
+  align-items: center;
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
 .option h4 {
-  flex-basis: 12%;
+  flex-basis: 10vw;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 0 0 0 1%;
+  margin: 0 0 0 1vw;
+}
+
+.miscoption h4 {
+  font-weight: normal;
+  margin: 0 0 0 0;
+}
+
+.option .desc {
+  color: #FFCC22;
+  font-size: 0.7vw;
+  margin: -0.25vw 0 0.55vw 0.9vw;
 }
 
 .option input {
-  flex-basis: 70%;
+  flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 0;
-  background-color: transparent;
+  background-color: #222A27;
+  border-radius: 1vw;
+  padding: 0 0 0 1vw;
+  height: 2.75vw;
   outline: none;
   border: none;
   outline: none;
@@ -292,18 +363,171 @@ body {
   cursor: default;
 }
 
+.option input[type="range"], .option input[type="color"] {
+  background-color: transparent;
+  flex-basis: 80%;
+}
+
 .option button {
-  flex-basis: calc(16% + 0.7vw);
-  flex-grow: 0;
+  flex-basis: 15%;
   flex-shrink: 0;
+  flex-grow: 1;
   background-color: #1E2422;
   border: none;
   border-radius: 1vw;
   font: inherit;
   font-weight: bold;
   font-size: 0.85vw;
-  padding: 0.5vw 1vw 0.5vw 1vw;
+  margin: 0 0 0 0.5vw;
+  height: 2.75vw;
   transition: color 0.2s;
+}
+
+#hotfix {
+  margin: 0 0 0 12.5vw;
+}
+
+.option input[type="color"] {
+  clip-path: circle(45%);
+  padding: 0 0 0 0;
+  width: 7vw;
+  height: 7vw;
+}
+
+.option .addbutton {
+  margin: 0.4vw 0 0.7vw 0;
+  width: 6.2vw;
+  height: 6.2vw;
+  border-radius: 3.5vw;
+  border: 0.3vw solid #2299BB;
+}
+
+.option .switch, .miscoption .toggle {
+  position: relative;
+  width: 2.5vw;
+  height: 0.9vw;
+  margin: 1vw 0 1vw 0;
+}
+
+.miscoption .toggle {
+  width: 2.25vw;
+  height: 0.75vw;
+  margin: 0 0 0 0;
+}
+
+.switch input, .toggle input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch .slider, .toggle .fill {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -0.25vw;
+  border: 0.25vw solid #394642;
+  transition: .4s;
+  border-radius: 0.9vw;
+}
+
+.toggle .fill {
+  top: -0.15vw;
+  left: 0;
+  border: 0.2vw solid #66FFCC;
+  transition: 0.2s;
+}
+
+.switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 0.5vw;
+  width: 0.5vw;
+  left: 0.2vw;
+  bottom: 0.2vw;
+  background-color: #66FFCC;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.switch .slider:hover, .toggle .fill:hover, .zoomoptions .zoomin:hover, .zoomoptions .zoomout:hover {
+  filter: brightness(180%);
+}
+
+input:checked + .slider {
+  border: 0.25vw solid #66FFCC;
+}
+
+input:checked + .fill {
+  background-color: #66FFCC;
+}
+
+input:checked + .slider:before {
+  transform: translateX(1.6vw);
+}
+
+.gridcontainer {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto auto;
+  margin: 0.2vw 0 0.2vw 2vw;
+}
+
+.coloursuboption {
+  position: relative;
+  text-align: center;
+}
+
+#newcolour {
+  margin: 0 0 0 0.3vw;
+}
+
+.coloursuboption p {
+  margin: 0 0 0 0;
+}
+
+.hexlabel {
+  position: absolute;
+  pointer-events: none;
+  color: white;
+  width: 100%;
+  top: calc(50% - 0.8vw);
+  transform: translateY(-50%);
+}
+
+#newcolour .hexlabel {
+  top: calc(50% - 1.2vw);
+  font-size: 4vw;
+  font-weight: bold;
+}
+
+.option .removebutton {
+  position: absolute;
+  z-index: 4;
+  border: 0.2vw solid #bb2222;
+  left: 0.2vw;
+  top: 0.2vw;
+  margin: 0;
+  padding: 0vw 0.7vw 0vw 0.7vw;
+  height: fit-content;
+
+}
+
+.tooltip {
+  position: fixed;
+  background-color: #323332;
+  text-align: center;
+  border-radius: 0.5vw;
+  padding: 0.25vw 0.5vw 0.25vw 0.5vw;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.1s;
+  opacity: 0;
+  z-index: 4;
+}
+
+.tooltip p {
+  margin: 0 0 0 0;
 }
 
 ::placeholder {
@@ -361,18 +585,20 @@ body {
 }
 
 .timeline .main {
+  position: relative;
   background-color: #171C1A;
   flex-basis: 65%;
+  z-index: 0;
   overflow: hidden;
 }
 
 .main .line {
-  position: relative;
+  position: absolute;
   width: 90%;
   height: 2px;
-  margin: 0 0 0 5%;
+  left: 50%;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
   background-color: #45544F;
 }
 
@@ -396,12 +622,12 @@ body {
 }
 
 .main .indicator {
+  position: absolute;
   background-color: #ED1121;
   width: 3px;
   height: 10rem;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1;
 }
 
 .playbackoptions {
@@ -587,4 +813,84 @@ body {
 .preview .video {
   width: 90%;
   margin: 0 5% 0 5%;
+}
+
+.detailedtimeline {
+  position: relative;
+  background-color: #2E3835;
+  width: 100%;
+  height: 7vw;
+  margin: 2vw 0 0 0;
+  z-index: 5;
+}
+
+.detailedtimeline .main {
+  display: flex;
+  justify-content: left;
+  position: absolute;
+  width: calc(100% - 2vw);
+  height: calc(100% - 1vw);
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  margin: 0 0 0 0;
+  overflow: hidden;
+}
+
+.main .viewoptions {
+  flex-basis: 10%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: #45544F;
+}
+
+.main .zoomoptions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-basis: 2.5%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: #37433F;
+  color: #5C7069;
+  text-align: center;
+}
+
+.zoomoptions .zoomin, .zoomoptions .zoomout {
+  width: 100%;
+  flex-basis: 50%;
+  background-color: #37433F;
+  border-radius: 0.5vw;
+  transition: 0.2s;
+}
+
+.zoomoptions h2 {
+  margin: 0.2vw 0 0 0;
+}
+
+.main .timelinevisualiser {
+  position: relative;
+  overflow: hidden;
+  flex-basis: 70%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: #222A27;
+}
+
+.timelinevisualiser .indicator {
+  width: 2px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.timelinevisualiser .tpindicator {
+  position: absolute;
+  background-color: #CC6600;
+  height: 4vw;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  z-index: 1;
 }

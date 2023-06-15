@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import { FileContext } from "@/contexts/FileSystem";
 
-import Color3 from "@/utils/color3";
 import HitObject, { TimingPoint } from "@/utils/hitobject";
 import { isEmpty, mkdirs } from "@/utils/filesystem";
 
@@ -21,7 +20,9 @@ export const MapConfig = ({ children }) => {
     const [stackLeniency, setStackLeniency] = useState(0.7);
     const [mode, setMode] = useState(0);
     const [isLetterboxInBreaks, useLetterboxInBreaks] = useState(false); // letterboxInBreaks
+    const [isEpilepsyWarning, useEpilepsyWarning] = useState(false); //epilepsyWarning
     const [isWidescreenStoryboard, useWidescreenStoryboard] = useState(true); // widescreenStoryboard
+    const [isSamplesMatchPlaybackRate, useSamplesMatchPlaybackRate] = useState(false);
 
     // Editor
     const [distanceSnap, setDistanceSnap] = useState(1); // distanceSpacing
@@ -54,10 +55,14 @@ export const MapConfig = ({ children }) => {
     // video and storyboard never
 
     // TimingPoints
-    const [timingPoints, setTimingPoints] = useState([] as TimingPoint[]);
+    const [timingPoints, setTimingPoints] = useState([
+        new TimingPoint(400, 120, false),
+        new TimingPoint(1200, 180, false),
+        new TimingPoint(5000, 120, true),
+    ] as TimingPoint[]);
 
     // Colours
-    const [colours, setColours] = useState([Color3.fromRGB(255, 255, 255)] as Color3[]);
+    const [colours, setColours] = useState(["#ffffff"]);
 
     // HitObjects
     const [hitObjects, setHitObjects] = useState([] as HitObject[]);
@@ -81,33 +86,31 @@ export const MapConfig = ({ children }) => {
                     });
                 }
                 else {
-                    mkdirs("/osu!/Songs", () => {
-                        var index = 1;
-                        const createNextFree = () => {
-                            const path = "/osu!/Songs/beatmap" + index.toString();
-                            fs.exists(path, (exists) => {
-                                if (exists) {
-                                    isEmpty(path, (e, isEmpty) => {
-                                        if (e) { throw e; }
-                                        if (!isEmpty) {
-                                            index++;
-                                            createNextFree();
-                                        }
-                                        else {
-                                            setDir(path);
-                                        }
-                                    });
-                                }
-                                else {
-                                    fs.mkdir(path, 0o777, (e) => {
-                                        if (e) { throw e; }
+                    var index = 1;
+                    const createNextFree = () => {
+                        const path = "/osu!/Songs/beatmap" + index.toString();
+                        fs.exists(path, (exists) => {
+                            if (exists) {
+                                isEmpty(path, (e, isEmpty) => {
+                                    if (e) { throw e; }
+                                    if (!isEmpty) {
+                                        index++;
+                                        createNextFree();
+                                    }
+                                    else {
                                         setDir(path);
-                                    });
-                                }
-                            });
-                        }
-                        createNextFree();
-                    });
+                                    }
+                                });
+                            }
+                            else {
+                                mkdirs(path+"/fill.osu", (e) => {
+                                    if (e) { throw e; }
+                                    setDir(path);
+                                });
+                            }
+                        });
+                    }
+                    createNextFree();
                 }
             })
         }
@@ -125,7 +128,9 @@ export const MapConfig = ({ children }) => {
         stackLeniency: stackLeniency, setStackLeniency: setStackLeniency,
         mode: mode, setMode: setMode,
         isLetterboxInBreaks: isLetterboxInBreaks, useLetterboxInBreaks: useLetterboxInBreaks,
+        isEpilepsyWarning: isEpilepsyWarning, useEpilepsyWarning: useEpilepsyWarning,
         isWidescreenStoryboard: isWidescreenStoryboard, useWidescreenStoryboard: useWidescreenStoryboard,
+        isSamplesMatchPlaybackRate: isSamplesMatchPlaybackRate, useSamplesMatchPlaybackRate: useSamplesMatchPlaybackRate,
         distanceSnap: distanceSnap, setDistanceSnap: setDistanceSnap,
         beatDivisor: beatDivisor, setBeatDivisor: setBeatDivisor,
         gridSize: gridSize, setGridSize: setGridSize,
