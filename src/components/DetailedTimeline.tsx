@@ -6,9 +6,8 @@ import { TimingPoint } from "@/utils/hitobject";
 
 const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom }) => {
     const mapAudioContext = useContext(MapAudioContext);
-    const [track, setTrack] = useState({currentTime: 0});
+    const [track, setTrack] = useState({ currentTime: 0 });
     const ref = useRef(null);
-    console.log(timingPoint)
     useEffect(() => {
         setTrack(mapAudioContext.getTrack());
     }, []);
@@ -21,13 +20,12 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom }) => {
         }
 
         const timer = setInterval(() => {
-            tpindicator.style.left = (((timingPoint.time - (track.currentTime * 1000)) * zoom * 0.01) + (tvWidth * 0.5)).toString()+"px";
+            tpindicator.style.left = (((timingPoint.time - (track.currentTime * 1000)) * zoom * 0.01) + (tvWidth * 0.5)).toString() + "px";
         }, 10);
         return (() => { clearInterval(timer); });
     }, [track, zoom]);
 
-    //@ts-ignore
-    return (<><div className="tpindicator" ref={ref} /></>);
+    return (<div className="tpindicator" ref={ref}>{timingPoint.bpm > 0 ? <p className="bpmlabel">{timingPoint.bpm} BPM</p> : <></>}</div>);
 }
 
 const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTicks, showBPM, zoom }) => {
