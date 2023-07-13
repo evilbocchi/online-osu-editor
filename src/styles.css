@@ -920,3 +920,15 @@ input:checked+.slider:before {
   margin: 0 0 0 0;
   text-align: center;
 }
+
+.beatindicator {
+  position: absolute;
+  background-color: #ffffff;
+  height: 3vw;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  z-index: 1;
+  border-radius: 1vw;
+}
