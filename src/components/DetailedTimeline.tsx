@@ -1,34 +1,59 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import WaveSurfer from 'wavesurfer.js';
 import { MapAudioContext } from "@/contexts/AudioManager";
 import Toggle from "@/components/Toggle";
 import { MapContext } from "@/contexts/MapManager";
 import { TimingPoint } from "@/utils/hitobject";
 
+// place these elsewhere soon
+const getXPos = (time, currentTime, zoom) => {
+    return (time - currentTime) * 0.01 * zoom;
+}
+const gcd = (a, b) => {
+    if (b === 0) {
+        return a;
+    }
+    return gcd(b, a % b);
+}
+const getTickColor = (beatDivide) => {
+    switch (beatDivide) {
+        case 1:
+            return "#FFFFFF";
+        case 2:
+            return "#ED1121";
+        case 3:
+            return "#8866EE";
+        case 4:
+            return "#66CCFF";
+        case 6:
+            return "#D19806";
+        case 8:
+            return "#FFCC22";
+        case 12:
+            return "#AF5C07";
+        case 16:
+            return "#593FAD";
+        default:
+            return "#FFFFFF";
+    }
+}
 
-const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor, showTicks }) => {
-    const mapAudioContext = useContext(MapAudioContext);
-    const [track, setTrack] = useState({ currentTime: 0 });
+const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor, showTicks, track, viewWidth }) => {
     const [ticks, setTicks] = useState([]);
     const ref = useRef(null);
-    // helper functions will never move
-    const getXPos = (time, currentTime) => {
-        return (time - currentTime) * zoom * 0.01;
-    }
-    const gcd = (a, b) => {
-        if (b === 0) {
-            return a;
-        }
-        return gcd(b, a % b);
-    }
     useEffect(() => {
-        setTrack(mapAudioContext.getTrack());
-        if (nextTimingPoint && showTicks) {
+        if (showTicks && track) {
             const newTicks = [];
-            var t = timingPoint.time;
+            var i = 0;
             var currentBeatDivide = 1;
-            while (t < nextTimingPoint.time) {
-                newTicks.push({ beatDivide: beatDivisor / gcd(currentBeatDivide - 1, beatDivisor), time: t });
-                t += (1 / timingPoint.bpm) * 60000 / beatDivisor;
+            const endTime = nextTimingPoint && nextTimingPoint.time < track.duration ? nextTimingPoint.time : track.duration * 1000;
+            while (true) {
+                const time = timingPoint.time + (i * (1 / timingPoint.bpm) * 60000 / beatDivisor);
+                if (time > endTime) {
+                    break;
+                }
+                newTicks.push({ beatDivide: beatDivisor / gcd(currentBeatDivide - 1, beatDivisor), time: time });
+                i++;
                 currentBeatDivide = currentBeatDivide > beatDivisor - 1 ? 1 : currentBeatDivide + 1;
             }
             setTicks(newTicks);
@@ -36,12 +61,12 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
         else {
             setTicks([]);
         }
-    }, [showTicks]);
+    }, [showTicks, track]);
 
     useEffect(() => {
         const timer = setInterval(() => {
-            ref.current.style.left = (getXPos(timingPoint.time, track.currentTime * 1000)
-                + (ref.current.parentElement.getBoundingClientRect().width * 0.5)).toString() + "px";
+            ref.current.style.left = (getXPos(timingPoint.time, track.currentTime * 1000, zoom)
+                + (viewWidth * 0.5)).toString() + "px";
         }, 10);
         return (() => { clearInterval(timer); });
     }, [track, zoom]);
@@ -50,7 +75,7 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
         {timingPoint.bpm > 0 ? <p className="bpmlabel">{timingPoint.bpm} BPM</p> : <></>}
         {ticks.map((tick) => {
             //@ts-ignore
-            return (<BeatIndicator key={tick.time} pos={getXPos(tick.time, timingPoint.time)} time={tick.time}
+            return (<BeatIndicator key={tick.time} pos={getXPos(tick.time, timingPoint.time, zoom)} time={tick.time}
                 beatDivide={tick.beatDivide} />);
         })}
 
@@ -59,52 +84,35 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
 
 const BeatIndicator = ({ time, beatDivide, pos }) => {
     const ref = useRef(null);
-    // would place this elsewhere but its fine
-    const getTickColor = () => {
-        switch (beatDivide) {
-            case 1:
-                return "#FFFFFF";
-            case 2:
-                return "#ED1121";
-            case 3:
-                return "#8866EE";
-            case 4:
-                return "#66CCFF";
-            case 6:
-                return "#D19806";
-            case 8:
-                return "#FFCC22";
-            case 12:
-                return "#AF5C07";
-            case 16:
-                return "#593FAD";
-            default:
-                return "#FFFFFF";
-        }
-    }
     useEffect(() => {
         ref.current.style.width = (2 / beatDivide + 1).toString() + "px";
-        ref.current.style.height = (0.05 * (16 - beatDivide) + 2.7).toString() + "vw";
-        ref.current.style.backgroundColor = getTickColor();
+        ref.current.style.height = (0.06 * (16 - beatDivide) + 2.7).toString() + "vw";
+        ref.current.style.backgroundColor = getTickColor(beatDivide);
     }, []);
     useEffect(() => {
-        const timer = setInterval(() => {
+        if (ref.current) {
             ref.current.style.left = pos + "px";
-        }, 10);
-        return (() => { clearInterval(timer); });
+        }
     }, [pos]);
-
     //@ts-ignore
     return (<div className="beatindicator" ref={ref} time={time} beatdivide={beatDivide}></div>);
 }
 
-
 const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTicks, showBPM, zoom, beatDivisor }) => {
     const zTimingPoint = useRef(new TimingPoint(0, 0, false));
-    const track = mapAudioContext.getTrack();
-    return (<div className="timelinevisualiser" onMouseMove={(e) => {
+    const [track, setTrack] = useState(null);
+    const [viewWidth, setViewWidth] = useState(0);
+    const ref = useRef(null);
+    useEffect(() => {
+        setTrack(mapAudioContext.getTrack());
+    }, [mapAudioContext]);
+    useEffect(() => {
+        setViewWidth(ref.current.getBoundingClientRect().width);
+    }, []);
+
+    return (<div className="timelinevisualiser" ref={ref} onMouseMove={(e) => {
         if (e.buttons > 0) {
-            track.currentTime -= e.movementX / 1000;
+            track.currentTime -= e.movementX / zoom * 0.1;
         }
     }} onDoubleClick={(e) => {
         var nearest = null;
@@ -122,10 +130,10 @@ const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTick
     }}>
         <div className="indicator" />
         <TimingPointIndicator timingPoint={zTimingPoint.current} nextTimingPoint={null} zoom={zoom} beatDivisor={beatDivisor}
-            showTicks={showTicks} />
+            showTicks={false} track={track} viewWidth={viewWidth} />
         {mapConfig.timingPoints.map((tp, i) => {
-            return (<TimingPointIndicator key={i} timingPoint={tp}
-                nextTimingPoint={mapConfig.timingPoints[i + 1]} zoom={zoom} beatDivisor={beatDivisor} showTicks={showTicks} />);
+            return (<TimingPointIndicator key={i} timingPoint={tp} nextTimingPoint={mapConfig.timingPoints[i + 1]} zoom={zoom}
+                beatDivisor={beatDivisor} showTicks={showTicks} track={track} viewWidth={viewWidth} />);
         })}
     </div>);
 }

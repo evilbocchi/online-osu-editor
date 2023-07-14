@@ -881,7 +881,7 @@ input:checked+.slider:before {
 .main .timelinevisualiser {
   position: relative;
   overflow: hidden;
-  flex-basis: 70%;
+  flex-basis: 80%;
   flex-shrink: 0;
   flex-grow: 0;
   background-color: #222A27;
