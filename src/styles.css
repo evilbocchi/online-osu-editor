@@ -63,7 +63,8 @@ body {
   transform: translateY(-50%);
 }
 
-.load h4 {
+.load h4,
+.timeoption .info {
   color: #FFD966;
 }
 
@@ -458,7 +459,8 @@ body {
 .switch .slider:hover,
 .toggle .fill:hover,
 .zoomoptions .zoomin:hover,
-.zoomoptions .zoomout:hover {
+.zoomoptions .zoomout:hover,
+.snapoptions .buttons div:hover {
   filter: brightness(180%);
 }
 
@@ -931,4 +933,124 @@ input:checked+.slider:before {
   width: 1px;
   z-index: 1;
   border-radius: 1vw;
+}
+
+.main .snapoptions {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  flex-basis: 6.5%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  margin: 0 0 0 1%;
+  background-color: #394642;
+  text-align: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.snapoptions * {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+.snapoptions .buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+}
+
+.snapoptions .buttons div {
+  width: 50%;
+  border-radius: 0.5vw;
+  transition: 0.2s;
+  background-color: #394642;
+}
+
+.timingoptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 40vw;
+}
+
+.timingpointsoptions {
+  display: flex;
+  flex-basis: 75%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+  height: 100%;
+  overflow: scroll;
+}
+
+.timeoptions {
+  flex-basis: 28%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 1% 0 1%;
+  background-color: #394642;
+}
+
+.timeoptions *,
+.attributeoptions * {
+  display: flex;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  height: 2vw;
+  align-items: center;
+}
+
+.attributeoptions {
+  flex-basis: 68%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 1% 0 1%;
+  background-color: #2E3835;
+}
+
+.timeoption,
+.attributeoption {
+  border-radius: 0.5vw;
+  transition: 0.2s;
+  padding: 0 2% 0 2%;
+  background-color: #394642;
+  justify-content: space-evenly;
+}
+
+.timeoption:hover {
+  background-color: #5C7069;
+}
+
+.attributeoption {
+  width: 10vw;
+  background-color: #2E3835;
+}
+
+.timeoption .info,
+.attributeoption .miscoption {
+  background-color: #2E3835;
+  border-radius: 0.35vw;
+  padding: 0 2vw 0 2vw;
+  height: 80%;
+  font-size: 0.75vw;
+}
+
+.attributeoption .miscoption {
+  background-color: #222A27;
+  width: 50%;
+}
+
+.timingpointeditor {
+  background-color: #171C1A;
+  display: flex;
+  flex-basis: 25%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+  height: 100%;
 }

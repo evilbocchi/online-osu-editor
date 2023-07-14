@@ -10,6 +10,7 @@ const sounds = {}; // this is a constant so i assume it doesnt have to be a stat
 const AudioManager = ({ children }) => {
     const mapContext = useContext(MapContext);
     const [trackSpeed, setTrackSpeed] = useState(1);
+    const [trackDuration, setTrackDuration] = useState(0);
     const [isPlaying, setPlaying] = useState(false);
 
     useEffect(() => {

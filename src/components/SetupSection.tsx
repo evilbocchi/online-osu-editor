@@ -227,7 +227,7 @@ const SetupSection = ({ active, showMessage }) => {
         audio.src = data as string;
     }
     // @ts-ignore
-    return (<div className="section" id="setup" active={active}>
+    return (<div className="section" id="setup" active={active.toString()}>
         <div className="sectionnavbar">
             <div className="title">
                 <div className="emptyspace" />

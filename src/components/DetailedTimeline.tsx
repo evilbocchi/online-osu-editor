@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import WaveSurfer from 'wavesurfer.js';
 import { MapAudioContext } from "@/contexts/AudioManager";
 import Toggle from "@/components/Toggle";
 import { MapContext } from "@/contexts/MapManager";
@@ -18,6 +17,7 @@ const gcd = (a, b) => {
 const getTickColor = (beatDivide) => {
     switch (beatDivide) {
         case 1:
+        default:
             return "#FFFFFF";
         case 2:
             return "#ED1121";
@@ -33,36 +33,53 @@ const getTickColor = (beatDivide) => {
             return "#AF5C07";
         case 16:
             return "#593FAD";
+    }
+}
+
+const changeDivisor = (beatDivisor, delta) => {
+    switch (beatDivisor + delta) {
         default:
-            return "#FFFFFF";
+            return beatDivisor + delta < 1 ? 1 : (beatDivisor + delta > 16 ? 16 : beatDivisor + delta);
+        case 5:
+        case 7:
+        case 9:
+        case 10:
+        case 11:
+        case 13:
+        case 14:
+        case 15:
+            return delta > 0 ? changeDivisor(beatDivisor, delta + 1) : changeDivisor(beatDivisor, delta - 1);
     }
 }
 
 const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor, showTicks, track, viewWidth }) => {
     const [ticks, setTicks] = useState([]);
     const ref = useRef(null);
-    useEffect(() => {
+    const updateBeatTicks = () => {
         if (showTicks && track) {
             const newTicks = [];
             var i = 0;
-            var currentBeatDivide = 1;
-            const endTime = nextTimingPoint && nextTimingPoint.time < track.duration ? nextTimingPoint.time : track.duration * 1000;
+            var currentBeatDivide = 0;
+            const endTime = (nextTimingPoint && nextTimingPoint.time < track.duration * 1000) ?
+                nextTimingPoint.time : track.duration * 1000;
             while (true) {
                 const time = timingPoint.time + (i * (1 / timingPoint.bpm) * 60000 / beatDivisor);
+                i++;
+                currentBeatDivide = currentBeatDivide > beatDivisor - 1 ? 1 : currentBeatDivide + 1;
                 if (time > endTime) {
                     break;
                 }
+                if (Math.abs(time - track.currentTime * 1000) > viewWidth / zoom * 100) {
+                    continue;
+                }
                 newTicks.push({ beatDivide: beatDivisor / gcd(currentBeatDivide - 1, beatDivisor), time: time });
-                i++;
-                currentBeatDivide = currentBeatDivide > beatDivisor - 1 ? 1 : currentBeatDivide + 1;
             }
             setTicks(newTicks);
         }
         else {
             setTicks([]);
         }
-    }, [showTicks, track]);
-
+    }
     useEffect(() => {
         const timer = setInterval(() => {
             ref.current.style.left = (getXPos(timingPoint.time, track.currentTime * 1000, zoom)
@@ -71,18 +88,31 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
         return (() => { clearInterval(timer); });
     }, [track, zoom]);
 
+    useEffect(() => {
+        updateBeatTicks();
+        if (track) {
+            track.addEventListener("durationchange", updateBeatTicks);
+            track.addEventListener("timeupdate", updateBeatTicks);
+        }
+        return (() => {
+            if (track) {
+                track.removeEventListener("durationchange", updateBeatTicks);
+                track.removeEventListener("timeupdate", updateBeatTicks);
+            }
+        });
+    }, [showTicks, beatDivisor, track, zoom]);
+
     return (<div className="tpindicator" ref={ref}>
         {timingPoint.bpm > 0 ? <p className="bpmlabel">{timingPoint.bpm} BPM</p> : <></>}
         {ticks.map((tick) => {
             //@ts-ignore
             return (<BeatIndicator key={tick.time} pos={getXPos(tick.time, timingPoint.time, zoom)} time={tick.time}
-                beatDivide={tick.beatDivide} />);
+                beatDivide={tick.beatDivide} bpm={timingPoint.bpm} />);
         })}
-
     </div>);
 }
 
-const BeatIndicator = ({ time, beatDivide, pos }) => {
+const BeatIndicator = ({ time, beatDivide, bpm, pos }) => {
     const ref = useRef(null);
     useEffect(() => {
         ref.current.style.width = (2 / beatDivide + 1).toString() + "px";
@@ -95,7 +125,7 @@ const BeatIndicator = ({ time, beatDivide, pos }) => {
         }
     }, [pos]);
     //@ts-ignore
-    return (<div className="beatindicator" ref={ref} time={time} beatdivide={beatDivide}></div>);
+    return (<div className="beatindicator" ref={ref} time={time} beatdivide={beatDivide} bpm={bpm}></div>);
 }
 
 const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTicks, showBPM, zoom, beatDivisor }) => {
@@ -103,29 +133,52 @@ const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTick
     const [track, setTrack] = useState(null);
     const [viewWidth, setViewWidth] = useState(0);
     const ref = useRef(null);
+    const handleWheel = (e) => {
+        e.preventDefault();
+        var nextTo = null;
+
+        document.querySelectorAll(".beatindicator").forEach((element) => {
+            const time = parseInt(element.getAttribute("time"));
+            const currentTime = track.currentTime * 1000;
+            const k = e.deltaY > 0 ? 1 : -1;
+            if (k * (time - currentTime) > 0 && ((!nextTo && time != currentTime) ||
+                (k * (parseInt(nextTo.getAttribute("time")) - currentTime) > k * (time - currentTime)))) {
+                nextTo = element;
+            }
+        });
+        if (nextTo) {
+            goToTime(parseInt(nextTo.getAttribute("time")) / 1000);
+        }
+    }
     useEffect(() => {
         setTrack(mapAudioContext.getTrack());
     }, [mapAudioContext]);
     useEffect(() => {
         setViewWidth(ref.current.getBoundingClientRect().width);
-    }, []);
+        if (track) { ref.current.addEventListener("wheel", handleWheel, { passive: false }); }
+        return (() => { if (ref.current) { ref.current.removeEventListener("wheel", handleWheel, { passive: false }); } });
+    }, [track]);
+    const goToTime = (time) => {
+        document.querySelectorAll(".tpindicator").forEach((element: any) => {
+            element.style.transition = "0.1s"; setTimeout(() => { element.style.transition = ""; }, 10);
+        })
+        track.currentTime = time;
+    }
 
     return (<div className="timelinevisualiser" ref={ref} onMouseMove={(e) => {
         if (e.buttons > 0) {
             track.currentTime -= e.movementX / zoom * 0.1;
         }
-    }} onDoubleClick={(e) => {
+    }} onDoubleClick={() => {
         var nearest = null;
         document.querySelectorAll(".beatindicator").forEach((element) => {
             if (!nearest || Math.abs(parseInt(nearest.getAttribute("time")) - (track.currentTime * 1000)) >
                 Math.abs(parseInt(element.getAttribute("time")) - (track.currentTime * 1000))) {
                 nearest = element;
             }
-        }); if (nearest) {
-            document.querySelectorAll(".tpindicator").forEach((element: any) => {
-                element.style.transition = "0.1s"; setTimeout(() => { element.style.transition = ""; }, 10);
-            })
-            track.currentTime = parseInt(nearest.getAttribute("time")) / 1000;
+        });
+        if (nearest) {
+            goToTime(parseInt(nearest.getAttribute("time")) / 1000);
         }
     }}>
         <div className="indicator" />
@@ -146,6 +199,17 @@ const DetailedTimeline = () => {
     const [isBPM, useBPM] = useState(true);
     const [zoom, setZoom] = useState(100);
     const [beatDivisor, setBeatDivisor] = useState(4);
+
+    const handleSnapWheel = (e) => {
+        e.preventDefault();
+        setBeatDivisor(changeDivisor(beatDivisor, e.deltaY < 0 ? 1 : -1));
+        mapAudioContext.playSound("NOTCH_TICK", 1, (beatDivisor / 16 - 0.5) * 500);
+    }
+    useEffect(() => {
+        const element = document.querySelector(".snapoptions") as any;
+        element.addEventListener("wheel", handleSnapWheel, { passive: false });
+        return (() => { element.removeEventListener("wheel", handleSnapWheel, { passive: false }); })
+    }, [beatDivisor]);
 
     return (<div className="detailedtimeline">
         <div className="main">
@@ -174,6 +238,20 @@ const DetailedTimeline = () => {
             </div>
             <TimelineVisualiser mapConfig={mapConfig} mapAudioContext={mapAudioContext}
                 showWaveform={isWaveform} showTicks={isTicks} showBPM={isBPM} zoom={zoom} beatDivisor={beatDivisor} />
+            <div className="snapoptions">
+                <h2>1/{beatDivisor}</h2>
+                <div className="buttons">
+                    <div onClick={() => {
+                        mapAudioContext.playSound("DEFAULT_SELECT");
+                        setBeatDivisor(changeDivisor(beatDivisor, -1));
+                    }}><h3>&lt;</h3></div>
+                    <div onClick={() => {
+                        mapAudioContext.playSound("DEFAULT_SELECT");
+                        setBeatDivisor(changeDivisor(beatDivisor, 1));
+                    }}><h3>&gt;</h3></div>
+                </div>
+                <p>Beat Snap</p>
+            </div>
         </div>
     </div>);
 }

@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { MapAudioContext } from "@/contexts/AudioManager";
-import { getBPM } from "@/utils/hitobject";
+import { formatTime, getBPM } from "@/utils/hitobject";
 
 const SpeedOption = ({ speed }) => {
     const context = useContext(MapAudioContext);
@@ -18,19 +18,6 @@ const SpeedOption = ({ speed }) => {
 const Timeline = ({ }) => {
 
     const mapAudioContext = useContext(MapAudioContext);
-
-    const formatTime = (s: number) => {
-        function pad(n: number, z?: number): string {
-            z = z || 2;
-            return ('00' + n).slice(-z);
-        }
-
-        var ms = s % 1000;
-        s = (s - ms) / 1000;
-        var secs = s % 60;
-        s = (s - secs) / 60;
-        return (s > 99 ? s : pad(s)) + ':' + pad(secs) + '.' + pad(ms, 3);
-    }
 
     useEffect(() => {
         const ctlabel = document.querySelector(".ctlabel");
