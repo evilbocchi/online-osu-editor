@@ -9,7 +9,7 @@ function NavbarDropdownOption({ label, type, onClick }) {
 function NavbarDropdown({ label, options }) {
     const audioManager = useContext(MapAudioContext);
     return (<div className="dropdown" onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>
-        <button className="dropbtn">{label}</button>
+        <p className="dropbtn">{label}</p>
         <div className="dropdown-content">{options}</div>
     </div>)
 }
@@ -22,7 +22,7 @@ const NavbarTabSelect = ({ id, label, currentSection, setCurrentSection }) => {
             setCurrentSection(id);
             audioManager.playSound("TABSELECT_SELECT");
         }} onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>
-            <button className="buttonlabel">{label}</button>
+            <p className="buttonlabel">{label}</p>
         </div>
     );
 }

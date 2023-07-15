@@ -1,5 +1,5 @@
 @import url("/fonts/toruspro/stylesheet.css");
-@import url("@/rangeslider.css");
+@import url("@/styles/rangeslider.css");
 
 :root {
   font-family: 'Torus Notched', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -19,48 +19,111 @@
   scroll-behavior: smooth;
 }
 
-body {
+@mixin zeroMargin($important: false) {
   margin: 0;
-  padding: 0;
-}
 
-.preventlandscape {
-  display: none;
-  position: fixed;
-  background-color: #1F2E29;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  z-index: 999;
-}
-
-.preventlandscape h1 {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-@media (max-aspect-ratio: 4/5) {
-  .preventlandscape {
-    display: block;
+  @if $important {
+    margin: 0 !important;
   }
 }
 
-.load {
+@mixin zeroPadding($important: false) {
+  padding: 0;
+
+  @if $important {
+    padding: 0 !important;
+  }
+}
+
+@mixin zeroMP() {
+  @include zeroMargin;
+  @include zeroPadding;
+}
+
+@mixin topLeft($top: 0, $left: 0, $transformX: 0, $transformY: 0) {
+  top: $top;
+  left: $left;
+  transform: translate($transformX, $transformY);
+}
+
+@mixin absolute($top: 0, $left: 0, $transformX: 0, $transformY: 0) {
+  @include topLeft($top, $left, $transformX, $transformY);
+  position: absolute;
+}
+
+@mixin fixed($top: 0, $left: 0, $transformX: 0, $transformY: 0) {
+  @include topLeft($top, $left, $transformX, $transformY);
   position: fixed;
-  background-color: #1F2E29;
+}
+
+
+@mixin fullWidth() {
   width: 100%;
+}
+
+@mixin fullHeight() {
   height: 100%;
+}
+
+@mixin fullSize() {
+  @include fullWidth;
+  @include fullHeight;
+}
+
+@mixin zeroTL() {
+  top: 0;
+  left: 0;
+}
+
+@mixin flex($justify: center, $align: center, $direction: column) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: $direction;
+}
+
+@mixin flexCenter() {
+  @include flex(center, center);
+}
+
+@mixin flexBasis($basis: 0, $grow: 0, $shrink: 0) {
+  flex-basis: $basis;
+  flex-grow: $grow;
+  flex-shrink: $shrink;
+}
+
+
+body,
+h1,
+h2,
+h3,
+h4,
+p {
+  @include zeroMP;
+}
+
+.load {
+  @include fullSize;
+  @include fixed;
+  background-color: #1F2E29;
   text-align: center;
   z-index: 999;
 }
 
+.preventlandscape {
+  @extend .load;
+
+  @media (max-aspect-ratio: 4/5) {
+    display: block;
+  }
+
+  display: none;
+}
+
+.preventlandscape h1,
 .load .center {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  transform: translateY(-50%);
+  @include fixed(50%, 50%, -50%, -50%);
+  @include fullWidth;
 }
 
 .load h4,
@@ -69,30 +132,19 @@ body {
 }
 
 .navbar {
+  @include zeroTL;
+  @include fullWidth;
+  @include flex(space-between, center, row);
   background-color: #394642;
   position: fixed;
-  width: 100%;
-  height: 2vw;
-  top: 0;
-  left: 0;
   z-index: 99;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
 }
 
-.navbar button,
-.playbackoptions button,
-.item button {
+.navbar p,
+.playbackoptions .buttonlabel {
   background-color: transparent;
   border: none;
-  font: inherit;
-  font-size: 0.85vw;
   color: #91CDB9;
-  text-align: center;
-  min-width: 100%;
-  min-height: 100%;
   transition: color 0.1s;
 }
 
@@ -102,14 +154,13 @@ body {
   position: relative;
   float: left;
   background-color: #45544F;
-  margin: 0;
-  padding: 0 1vw 0 1vw;
   transition: background-color 0.1s;
 }
 
 .navbar .dropdown,
 .navbar .button {
-  height: 2vw;
+  @include flex(center, center);
+  padding: 0.3rem 1rem;
 }
 
 .navbar .dropdown:hover {
@@ -117,16 +168,14 @@ body {
   font-weight: bold;
 }
 
-.navbar .dropdown:hover button,
-.button:hover button {
+.navbar .dropdown:hover p,
+.button:hover p {
   color: white;
 }
 
 .navbar .dropdown-content {
+  @include absolute(100%, 0, 0, 0);
   display: none;
-  position: absolute;
-  margin: 0 0 0 -1vw;
-  font-size: 0.85vw;
   background-color: #45544F;
   white-space: nowrap;
   z-index: 69;
@@ -135,10 +184,9 @@ body {
 .navbar .dropdown-content a {
   color: white;
   font-weight: normal;
-  padding: 0.25vw 1vw;
+  padding: 0.2rem 1rem;
   text-decoration: none;
   display: block;
-  text-align: left;
   z-index: 9;
 }
 
@@ -151,68 +199,69 @@ body {
   display: block;
 }
 
-.button[active="true"] .buttonlabel {
+.button[active="true"] .buttonlabel,
+.sectionnavbar .button[active="true"] .buttonlabel {
   color: white;
   font-weight: bold;
 }
 
 .title .emptyspace {
-  width: 1.5vw;
+  width: 1.5rem;
 }
 
 .hexaconwrapper {
-  height: 1.75vw;
+  height: 1.7rem;
 }
 
 .setuphexacon {
-  max-width: 100%;
-  max-height: 100%;
+  @include fullSize;
 }
 
 .sectionnavbar {
+  @include fullWidth;
+  @include zeroTL;
+  @include fixed;
   background-color: #1F2E29;
-  height: 10%;
-  font-size: 0.925vw;
+  padding: 2.7rem 0 0 0;
   z-index: 5;
 }
 
 .sectionnavbar .title {
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  @include flex(left, center, row);
+  padding: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.setupnavbar {
+  @include zeroPadding(true);
 }
 
 .sectionnavbar .button {
+  @include zeroMargin;
+  position: relative;
   float: left;
-  overflow: hidden;
-  margin: 0;
-  width: 6vw;
+  padding: 0 1rem 0 1rem;
 }
 
-.sectionnavbar button {
-  background-color: transparent;
-  border: none;
-  font: inherit;
+.sectionnavbar .buttonlabel {
   color: #66FFCC;
-  text-align: center;
-  font-size: 0.85vw;
-  min-width: 100%;
-  padding: 0 0 0.2vw 0;
+  font-size: 0.95rem;
+  padding: 0 0 0.2rem 0;
   transition: color 0.1s;
   white-space: nowrap;
 }
 
 .sectionnavbar .outline {
+  @include zeroMargin;
   background-color: #66FFCC;
-  margin: 0 0 0 0;
   padding: 1px 0 0 0;
 }
 
 .sectionnavbar .outlineblob {
   background-color: #66FFCC;
   position: absolute;
-  width: 6vw;
+  left: 5%;
+  width: 90%;
   height: 0;
   border-radius: 15rem;
   transition: height 0.2s, margin-top 0.2s;
@@ -226,37 +275,21 @@ body {
   margin: -2px 0 0 0;
 }
 
-.sectionnavbar .button[active="true"] .buttonlabel {
-  color: white;
-  font-weight: bold;
-}
-
-#setup .sectionnavbar {
-  position: fixed;
-  width: 100%;
-  height: calc(14vw - 2px);
-  top: 2vw;
-  left: 0;
-  overflow: hidden;
-}
-
-#files .sectionnavbar {
-  margin: 2vw 0 0 0;
-}
-
 .sectionnavbar .setbg {
   background-color: #1E2422;
   text-align: center;
-  height: 9vw;
+  height: 20vh;
   position: relative;
   overflow: hidden;
+
+  @media (max-height: 400px) {
+    display: none;
+  }
 }
 
 .bg {
-  position: absolute;
-  top: -25vw;
-  left: 0;
-  width: 100%;
+  @include absolute(50%, 0, 0, -50%);
+  @include fullWidth;
   z-index: 3;
 }
 
@@ -268,155 +301,140 @@ body {
 }
 
 .setbg p {
-  position: absolute;
-  width: 100%;
-  top: 2.5vw;
-  font-size: 1.1vw;
+  @extend .bg;
+  z-index: 1;
+  font-size: 1.1rem;
 }
 
 .content {
+  @include topLeft(0, 50%, -50%, 0);
   position: relative;
-  width: 90vw;
-  margin: 0 0 0 5vw;
-  font-size: 0.95vw;
+  width: 90%;
   z-index: 1;
 }
 
 .content .emptyspace {
-  width: 100%;
-  height: 5vw;
+  @include fullWidth;
+  height: 5rem;
 }
 
 
 #setup .content {
-  margin: 18vw 0 0 5vw;
+  margin-top: calc(20vh + 8rem);
+
+  @media (max-height: 400px) {
+    margin-top: 8rem;
+  }
+
+  .heading {
+    margin: 1.5rem 0 0 0;
+  }
+}
+
+#files .content {
+  margin-top: 8rem;
 }
 
 .option,
 .miscoption {
-  display: flex;
-  align-items: center;
+  @include flex(center, center, row);
   background-color: transparent;
-  border-radius: 1vw;
-  width: 90vw;
-  min-height: 2.75vw;
-  overflow: hidden;
-  white-space: nowrap;
-  margin: 0 0 0.5vw 0;
-  font-size: 0.85vw;
+  margin: 0.5rem 0 0.5rem 0;
+  font-size: 0.9rem;
+
+  .wrapper {
+    @include flex(space-between, stretch, column);
+    @include flexBasis(100%, 0, 1);
+    background-color: #2E3835;
+    border-radius: 1rem;
+
+    .main {
+      @include flex(left, center, row);
+      @include flexBasis(100%, 0, 1);
+      position: relative;
+      margin: 0 0 0 0;
+
+      h4 {
+        @include flexBasis(10rem, 0, 0);
+        margin: 0.75rem 0 0.75rem 1rem;
+      }
+
+      input {
+        @include flexBasis(90%, 0, 1);
+        background-color: #222A27;
+        border-radius: 1rem;
+        padding: 0.75rem 1rem 0.75rem 1rem;
+        outline: none;
+        border: none;
+        font: inherit;
+        cursor: default;
+      }
+
+      input[type="range"],
+      input[type="color"] {
+        background-color: transparent;
+        flex-basis: 80%;
+      }
+
+      input[type="color"] {
+        clip-path: circle(50%);
+        padding: 0 0 0 0;
+        width: 7rem;
+        height: 7rem;
+      }
+
+      .addbutton {
+        width: 6.4rem;
+        height: 6.4rem;
+        border-radius: 3.5rem;
+        border: 0.3rem solid #2299BB;
+      }
+    }
+  }
+
+  .button {
+    @include flexBasis(15rem, 0, 1);
+    background-color: #1E2422;
+    border-radius: 1rem;
+    font-weight: bold;
+    margin: 0 0 0 0.5rem;
+    padding: 0.75rem 0 0.75rem 0;
+    transition: color 0.2s;
+    text-align: center;
+  }
+
+  .desc {
+    color: #FFCC22;
+    font-size: 0.7rem;
+    margin: 0.2rem 0 0.5rem 1rem;
+  }
 }
 
 .miscoption {
+  @include zeroMP;
+  position: relative;
   justify-content: space-between;
   overflow: visible;
   width: 80%;
-  min-height: auto;
-  margin: 0.6vw 0 -0.4vw 10%;
+
+  h4 {
+    @include zeroMargin;
+    font-weight: normal;
+  }
+
+  .toggle {
+    @extend .switch;
+    @include zeroMargin;
+    width: 2.25rem;
+    height: 0.75rem;
+  }
 }
 
-.option .wrapper {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex-grow: 0;
-  flex-shrink: 1;
-  background-color: #2E3835;
-}
-
-.wrapper .main {
-  display: flex;
-  align-items: center;
-  flex-basis: 100%;
-  flex-grow: 0;
-  flex-shrink: 1;
-}
-
-.option h4 {
-  flex-basis: 10vw;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin: 0 0 0 1vw;
-}
-
-.miscoption h4 {
-  font-weight: normal;
-  margin: 0 0 0 0;
-}
-
-.option .desc {
-  color: #FFCC22;
-  font-size: 0.7vw;
-  margin: -0.25vw 0 0.55vw 0.9vw;
-}
-
-.option input {
-  flex-basis: 100%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  background-color: #222A27;
-  border-radius: 1vw;
-  padding: 0 0 0 1vw;
-  height: 2.75vw;
-  outline: none;
-  border: none;
-  outline: none;
-  font: inherit;
-  font-size: 0.95vw;
-  cursor: default;
-}
-
-.option input[type="range"],
-.option input[type="color"] {
-  background-color: transparent;
-  flex-basis: 80%;
-}
-
-.option button {
-  flex-basis: 15%;
-  flex-shrink: 0;
-  flex-grow: 1;
-  background-color: #1E2422;
-  border: none;
-  border-radius: 1vw;
-  font: inherit;
-  font-weight: bold;
-  font-size: 0.85vw;
-  margin: 0 0 0 0.5vw;
-  height: 2.75vw;
-  transition: color 0.2s;
-}
-
-#hotfix {
-  margin: 0 0 0 12.5vw;
-}
-
-.option input[type="color"] {
-  clip-path: circle(45%);
-  padding: 0 0 0 0;
-  width: 7vw;
-  height: 7vw;
-}
-
-.option .addbutton {
-  margin: 0.4vw 0 0.7vw 0;
-  width: 6.2vw;
-  height: 6.2vw;
-  border-radius: 3.5vw;
-  border: 0.3vw solid #2299BB;
-}
-
-.option .switch,
-.miscoption .toggle {
+.switch {
   position: relative;
-  width: 2.5vw;
-  height: 0.9vw;
-  margin: 1vw 0 1vw 0;
-}
-
-.miscoption .toggle {
-  width: 2.25vw;
-  height: 0.75vw;
-  margin: 0 0 0 0;
+  width: 2.5rem;
+  height: 0.9rem;
+  margin: 0 0 0;
 }
 
 .switch input,
@@ -428,29 +446,27 @@ body {
 
 .switch .slider,
 .toggle .fill {
-  position: absolute;
-  width: 100%;
+  @include absolute(50%, 0, 0, -50%);
+  @include fullWidth;
   height: 100%;
-  top: -0.25vw;
-  border: 0.25vw solid #394642;
+  border: 0.25rem solid #394642;
   transition: .4s;
-  border-radius: 0.9vw;
+  border-radius: 0.9rem;
 }
 
 .toggle .fill {
-  top: -0.15vw;
-  left: 0;
-  border: 0.2vw solid #66FFCC;
+  @include topLeft(50%, 50%, -50%, -50%);
+  border: 0.2rem solid #66FFCC;
   transition: 0.2s;
 }
 
 .switch .slider:before {
   position: absolute;
   content: "";
-  height: 0.5vw;
-  width: 0.5vw;
-  left: 0.2vw;
-  bottom: 0.2vw;
+  height: 0.5rem;
+  width: 0.5rem;
+  left: 0.2rem;
+  bottom: 0.2rem;
   background-color: #66FFCC;
   transition: .4s;
   border-radius: 50%;
@@ -465,7 +481,7 @@ body {
 }
 
 input:checked+.slider {
-  border: 0.25vw solid #66FFCC;
+  border: 0.25rem solid #66FFCC;
 }
 
 input:checked+.fill {
@@ -473,22 +489,23 @@ input:checked+.fill {
 }
 
 input:checked+.slider:before {
-  transform: translateX(1.6vw);
+  transform: translateX(1.6rem);
 }
 
 .gridcontainer {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto auto auto auto;
-  margin: 0.2vw 0 0.2vw 2vw;
+  margin: 1rem 0 0.2rem 2rem;
 }
 
 .coloursuboption {
   position: relative;
   text-align: center;
+  margin: 0 0 0 0.3rem;
 }
 
 #newcolour {
-  margin: 0 0 0 0.3vw;
+  margin: 0 0 0 0.3rem;
 }
 
 .coloursuboption p {
@@ -496,40 +513,38 @@ input:checked+.slider:before {
 }
 
 .hexlabel {
-  position: absolute;
+  @include absolute;
+  @include fullWidth;
   pointer-events: none;
   color: white;
-  width: 100%;
-  top: calc(50% - 0.8vw);
+  top: calc(50% - 1rem);
   transform: translateY(-50%);
 }
 
 #newcolour .hexlabel {
-  top: calc(50% - 1.2vw);
-  font-size: 4vw;
+  @extend .hexlabel;
+  font-size: 4rem;
   font-weight: bold;
 }
 
 .option .removebutton {
   position: absolute;
   z-index: 4;
-  border: 0.2vw solid #bb2222;
-  left: 0.2vw;
-  top: 0.2vw;
+  border: 0.2rem solid #bb2222;
+  left: 0.2rem;
+  top: 0.2rem;
   margin: 0;
-  padding: 0vw 0.7vw 0vw 0.7vw;
+  padding: 0rem 0.7rem 0rem 0.7rem;
   height: fit-content;
 
 }
 
 .tooltip {
-  position: fixed;
+  @include absolute;
   background-color: #323332;
   text-align: center;
-  border-radius: 0.5vw;
-  padding: 0.25vw 0.5vw 0.25vw 0.5vw;
-  top: 0;
-  left: 0;
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.2);
   transition: opacity 0.1s;
   opacity: 0;
@@ -566,32 +581,32 @@ input:checked+.slider:before {
   flex-direction: row;
   background-color: #222A27;
   bottom: 0px;
-  width: 100%;
+  @include fullWidth;
   z-index: 5;
 }
 
 .timeline .labels {
   flex-basis: 10%;
   flex-grow: 0;
-  margin: 0 1.75vw 1vh 1.75vw;
+  margin: 0 1.75rem 1vh 1.75rem;
 }
 
 .labels * {
-  margin: 0 0 -0.5vw 0;
+  margin: 0 0 -0.5rem 0;
 }
 
 .labels h4 {
-  font-size: 1vw;
+  font-size: 1rem;
   color: #FFD966;
 }
 
 .labels h3 {
-  font-size: 1.75vw;
+  font-size: 1.75rem;
   font-weight: normal;
 }
 
 .labels p {
-  font-size: 0.9vw;
+  font-size: 0.9rem;
 }
 
 .timeline .main {
@@ -647,7 +662,7 @@ input:checked+.slider:before {
 }
 
 .playbackoptions .labels {
-  margin: 1vh 0 0 1vw;
+  margin: 1vh 0 0 1rem;
   flex-basis: 50%;
 }
 
@@ -658,8 +673,8 @@ input:checked+.slider:before {
 
 .speedoptions .button {
   background-color: transparent;
-  font-size: 0.9vw;
-  padding: 0.5vw 0 0 0;
+  font-size: 0.9rem;
+  padding: 0.5rem 0 0 0;
 }
 
 #playbutton {
@@ -673,64 +688,64 @@ input:checked+.slider:before {
 
 #playbutton .buttonlabel {
   color: #1A1E1B;
-  font-size: 1.1vw;
+  font-size: 1.1rem;
   height: 100%;
 }
 
 .filesvisualiser {
   background-color: #222A27;
-  border-radius: 0.5vw;
+  border-radius: 0.5rem;
 }
 
 .path {
-  display: flex;
-  flex-direction: row;
+  @include flex(left, center, row);
   flex-wrap: nowrap;
-  align-items: center;
   background-color: #171C1A;
-  border-radius: 0.5vw;
-  margin: 1vw 0 0 0;
+  border-radius: 0.5rem;
+  margin: 1rem 0 0 0;
+  padding: 0.2rem;
 }
 
-.path button {
+.path p {
   background-color: transparent;
   border: none;
-  margin: 0.25vw 0 0.25vw 0.7vw;
-  font: inherit;
+  margin: 0.25rem 0 0.25rem 0.7rem;
   transition: color 0.2s;
 }
 
-.path button:hover,
-.item button:hover,
-.option button:hover {
+.path p:hover,
+.item .label:hover,
+.option p:hover {
   color: #9bc5b6;
 }
 
 .directory {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: calc(100% - 2vw);
-  margin: 0 0 0 1vw;
-  padding: 0 0 0.3vw 0;
+  @include flex(space-evenly, start, row);
+  width: calc(100% - 2rem);
+  margin: 0 0 0 1rem;
+  padding: 0 0 0.3rem 0;
 }
 
 .list {
-  margin: 1vw 0 0 0;
-  height: 30vw;
-  flex-basis: 47vw;
-  flex-grow: 0;
-  flex-shrink: 0;
+  @include flexBasis(48%, 1);
+  margin: 1rem 0 0 0;
+  height: 30rem;
   overflow: auto;
 }
 
 .item {
-  display: flex;
-  align-items: center;
+  @include flex(left, center, row);
   background-color: #171C1A;
-  margin: 0.6vw 0.6vw 0.6vw 0;
-  padding: 0.3vw 1vw 0.3vw 1vw;
-  border-radius: 0.5vw;
+  margin: 0.6rem 0.6rem 0.6rem 0;
+  padding: 0.3rem 1rem 0.3rem 1rem;
+  border-radius: 0.5rem;
+
+  .label {
+    color: white;
+    text-align: center;
+    padding: 0 0.9rem 0 0.9rem;
+    transition: color 0.1s;
+  }
 }
 
 .list .item[active="true"] {
@@ -738,48 +753,33 @@ input:checked+.slider:before {
 }
 
 .item .icon {
-  width: 1vw;
-  height: 1vw;
+  width: 1rem;
+  height: 1rem;
 }
 
-.item button {
-  color: white;
-  text-align: left;
-  min-width: fit-content;
-  padding: 0 0.9vw 0 0.9vw;
-}
-
-.item p {
+.item .info {
   margin: 0;
-  padding: 0 0 0 2vw;
-  font-size: 0.8vw;
+  padding: 0 0 0 2rem;
+  font-size: 0.8rem;
   color: #899D96;
 }
 
 .options {
+  @include flexBasis(48%, 0, 1);
+  position: relative;
   background-color: rgba(23, 28, 26, 0.5);
-  border-radius: 1vw;
-  flex-basis: 35vw;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin: 1vw;
-  padding: 1vw 1vw 1vw 1vw;
-}
-
-.options p,
-.options h4 {
-  font-size: 0.85vw;
-  margin: 0.2vw 0 0 0;
+  border-radius: 1rem;
+  margin: 1rem 0 1rem 0;
+  padding: 1rem 1rem 1rem 1rem;
 }
 
 .options h4 {
-  font-size: 0.95vw;
+  font-size: 0.95rem;
+  margin: 0.2rem 0 0 0;
 }
 
 .manage {
   display: flex;
-  align-items: center;
-  justify-content: left;
 }
 
 .list .manage {
@@ -787,22 +787,22 @@ input:checked+.slider:before {
 }
 
 .manage .item {
-  margin: 0 1vw 0 0;
+  margin: 0 1rem 0 0;
 }
 
 .preview {
+  position: relative;
   background-color: rgba(23, 28, 26, 0.75);
-  border-radius: 1vw;
-  margin: 1vw 0 0 0;
-  width: 35vw;
-  height: 24vw;
+  border-radius: 1rem;
+  margin: 1rem 0 0 0;
+  width: 100%;
+  height: 24rem;
 }
 
 .preview .text {
-  padding: 1vw 1vw 1vw 1vw;
-  width: calc(100% - 2vw);
-  height: calc(100% - 2vw);
-  ;
+  @include absolute(50%, 50%, -50%, -50%);
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
   white-space: pre-wrap;
   resize: none;
   overflow: scroll;
@@ -810,8 +810,8 @@ input:checked+.slider:before {
 }
 
 .preview .image {
-  padding: 1vw 1vw 1vw 1vw;
-  width: 33vw;
+  padding: 1rem 1rem 1rem 1rem;
+  width: 33rem;
   overflow: scroll;
 }
 
@@ -828,9 +828,9 @@ input:checked+.slider:before {
 .detailedtimeline {
   position: relative;
   background-color: #2E3835;
-  width: 100%;
-  height: 7vw;
-  margin: 2vw 0 0 0;
+  @include fullWidth;
+  height: 7rem;
+  margin: 2rem 0 0 0;
   z-index: 5;
 }
 
@@ -838,8 +838,8 @@ input:checked+.slider:before {
   display: flex;
   justify-content: left;
   position: absolute;
-  width: calc(100% - 2vw);
-  height: calc(100% - 1vw);
+  width: calc(100% - 2rem);
+  height: calc(100% - 1rem);
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
@@ -848,9 +848,9 @@ input:checked+.slider:before {
 }
 
 .main .viewoptions {
-  flex-basis: 10%;
-  flex-shrink: 0;
-  flex-grow: 0;
+  @include flex(space-evenly, center);
+  @include flexBasis(10%, 0, 0);
+  position: relative;
   background-color: #45544F;
 }
 
@@ -869,15 +869,15 @@ input:checked+.slider:before {
 
 .zoomoptions .zoomin,
 .zoomoptions .zoomout {
-  width: 100%;
+  @include fullWidth;
   flex-basis: 50%;
   background-color: #37433F;
-  border-radius: 0.5vw;
+  border-radius: 0.5rem;
   transition: 0.2s;
 }
 
 .zoomoptions h2 {
-  margin: 0.2vw 0 0 0;
+  margin: 0.2rem 0 0 0;
 }
 
 .main .timelinevisualiser {
@@ -898,7 +898,7 @@ input:checked+.slider:before {
 .timelinevisualiser .tpindicator {
   position: absolute;
   background-color: #CC6600;
-  height: 3vw;
+  height: 3rem;
   top: 50%;
   left: 0;
   transform: translate(-50%, -50%);
@@ -909,16 +909,16 @@ input:checked+.slider:before {
 .tpindicator .bpmlabel {
   position: absolute;
   background-color: #FFD966;
-  border-radius: 0.5vw;
+  border-radius: 0.5rem;
   color: #242B28;
   font-weight: bold;
-  font-size: 0.6vw;
+  font-size: 0.6rem;
   width: fit-content;
   left: 50%;
-  top: -1.25vw;
+  top: -1.25rem;
   transform: translate(-50%, 0);
   white-space: nowrap;
-  padding: 0 0.2vw 0 0.2vw;
+  padding: 0 0.2rem 0 0.2rem;
   margin: 0 0 0 0;
   text-align: center;
 }
@@ -926,13 +926,13 @@ input:checked+.slider:before {
 .beatindicator {
   position: absolute;
   background-color: #ffffff;
-  height: 3vw;
+  height: 3rem;
   top: 50%;
   left: 0;
   transform: translate(-50%, -50%);
   width: 1px;
   z-index: 1;
-  border-radius: 1vw;
+  border-radius: 1rem;
 }
 
 .main .snapoptions {
@@ -955,17 +955,29 @@ input:checked+.slider:before {
   padding: 0 0 0 0;
 }
 
+.snapoptions h2 {
+  font-size: 1.2rem;
+}
+
+.snapoptions h3 {
+  font-size: 1rem;
+}
+
+.snapoptions p {
+  font-size: 0.8rem;
+}
+
 .snapoptions .buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  width: 100%;
+  @include fullWidth;
 }
 
 .snapoptions .buttons div {
   width: 50%;
-  border-radius: 0.5vw;
+  border-radius: 0.5rem;
   transition: 0.2s;
   background-color: #394642;
 }
@@ -974,8 +986,8 @@ input:checked+.slider:before {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: 40vw;
+  @include fullWidth;
+  height: 40rem;
 }
 
 .timingpointsoptions {
@@ -1001,7 +1013,7 @@ input:checked+.slider:before {
   display: flex;
   margin: 0 0 0 0;
   padding: 0 0 0 0;
-  height: 2vw;
+  height: 2rem;
   align-items: center;
 }
 
@@ -1015,7 +1027,7 @@ input:checked+.slider:before {
 
 .timeoption,
 .attributeoption {
-  border-radius: 0.5vw;
+  border-radius: 0.5rem;
   transition: 0.2s;
   padding: 0 2% 0 2%;
   background-color: #394642;
@@ -1027,17 +1039,17 @@ input:checked+.slider:before {
 }
 
 .attributeoption {
-  width: 10vw;
+  width: 10rem;
   background-color: #2E3835;
 }
 
 .timeoption .info,
 .attributeoption .miscoption {
   background-color: #2E3835;
-  border-radius: 0.35vw;
-  padding: 0 2vw 0 2vw;
+  border-radius: 0.35rem;
+  padding: 0 2rem 0 2rem;
   height: 80%;
-  font-size: 0.75vw;
+  font-size: 0.75rem;
 }
 
 .attributeoption .miscoption {

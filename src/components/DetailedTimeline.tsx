@@ -82,8 +82,10 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
     }
     useEffect(() => {
         const timer = setInterval(() => {
-            ref.current.style.left = (getXPos(timingPoint.time, track.currentTime * 1000, zoom)
-                + (viewWidth * 0.5)).toString() + "px";
+            if (track) {
+                ref.current.style.left = (getXPos(timingPoint.time, track.currentTime * 1000, zoom)
+                    + (viewWidth * 0.5)).toString() + "px";
+            }
         }, 10);
         return (() => { clearInterval(timer); });
     }, [track, zoom]);

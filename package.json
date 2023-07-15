@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "buildssr": "vite build --ssr ./src/entry-server.tsx",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -16,8 +17,10 @@
     "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sass": "^1.63.6",
     "tsconfig-paths": "^4.2.0",
     "vavite": "^1.8.1",
+    "vite-plugin-ssr": "^0.4.133",
     "wavesurfer.js": "^7.0.3"
   },
   "devDependencies": {

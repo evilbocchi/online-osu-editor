@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FSModule } from "browserfs/dist/node/core/FS";
 
 import { RESOURCES } from "@/utils/constants";
@@ -20,7 +20,7 @@ const SetupNavbarTabSelect = ({ id, label }) => {
             audioManager.playSound("TABSELECT_SELECT");
         }}
             onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>
-            <button className="buttonlabel">{label}</button>
+            <p className="buttonlabel">{label}</p>
             <div className="outlineblob"></div>
         </div>
     );
@@ -58,26 +58,28 @@ const SliderOption = ({ label, id, desc, min, max, defaultValue, step, onChange,
     }) => {
     const audioManager = useContext(MapAudioContext);
     const [value, setValue] = useState(defaultValue / step);
+    const tooltip = useRef(null);
+    const bounding = useRef(null);
     useEffect(() => {
         setValue(defaultValue / step);
     }, [defaultValue]);
-    const getTooltip = () => { return document.querySelector("#" + id + " .tooltip") as HTMLDivElement; };
     return (<div className="option" id={id}>
         <div className="wrapper">
-            <div className="main">
+            <div className="main" ref={bounding}>
                 <h4>{label}</h4>
-                <div className="tooltip"><p>{(value * step).toFixed(-Math.log10(step))}</p></div>
+                <div className="tooltip" ref={tooltip}><p>{(value * step).toFixed(-Math.log10(step))}</p></div>
                 <input type="range" min={min / step} max={max / step} value={value} step={1} onInput={(e) => {
                     const newValue = parseInt((e.target as HTMLInputElement).value);
                     audioManager.playSound("NOTCH_TICK", 1, ((newValue / max * step) - 0.5) * 500);
                     setValue(newValue);
                     if (onChange) { onChange((newValue * step).toFixed(-Math.log10(step))); }
                 }} onMouseMove={(e) => {
-                    const tooltip = getTooltip();
-                    tooltip.style.opacity = "1";
-                    tooltip.style.top = (e.clientY + 20).toString() + "px";
-                    tooltip.style.left = (e.clientX + 5).toString() + "px";
-                }} onMouseLeave={() => { getTooltip().style.opacity = "0"; }} />
+                    const rect = bounding.current.getBoundingClientRect();
+                    console.log(e.pageX)
+                    tooltip.current.style.opacity = "1";
+                    tooltip.current.style.top = (e.clientY - rect.y + 20).toString() + "px";
+                    tooltip.current.style.left = (e.clientX - rect.x + 5).toString() + "px";
+                }} onMouseLeave={() => { tooltip.current.style.opacity = "0"; }} />
             </div>
             <h5 className="desc">{desc}</h5>
         </div>
@@ -103,10 +105,10 @@ const ColourSubOption = ({ label, index, defaultValue, onChange, onRemove, remov
             if (onChange) { onChange(e); }
         }} onMouseDown={() => { audioManager.playSound("DEFAULT_SELECT"); }} />
         <p className="hexlabel">{colour.toUpperCase()}</p>
-        <button className="removebutton" id={removable ? "" : "hide"} onClick={() => {
+        <p className="removebutton" id={removable ? "" : "hide"} onClick={() => {
             audioManager.playSound("DEFAULT_SELECT");
             onRemove();
-        }}>-</button>
+        }}>-</p>
         <p>{label}</p>
     </div>);
 }
@@ -142,7 +144,7 @@ const ColoursOption = ({ label, id, desc, defaultValue, onChange, indexLabel, ch
                             onChange(newColours);
                         }} removable={colours.length > 1} />)}
                     <div className="coloursuboption" id="newcolour">
-                        <button className="addbutton" onClick={() => {
+                        <div className="addbutton" onClick={() => {
                             var newColours = colours.slice();
                             newColours.push("#ffffff");
                             setColours(newColours);
@@ -238,7 +240,7 @@ const SetupSection = ({ active, showMessage }) => {
                 <div className="emptyspace" />
                 <p>beatmap setup</p>
             </div>
-            <div className="title">
+            <div className="title setupnavbar">
                 <div className="emptyspace" />
                 <div className="emptyspace" />
                 <div className="emptyspace" />
@@ -273,30 +275,30 @@ const SetupSection = ({ active, showMessage }) => {
             <div id="resources">
                 <h4 className="heading">Resources</h4>
                 <TextBoxOption label="Mapset Folder" id="mapsetfolder" defaultValue={mapConfig.dir ? mapConfig.dir : ""}>
-                    <button id="hotfix" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
+                    <p className="button" id="hotfix" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
                         mapConfig.setDir((document.querySelector("#mapsetfolder input") as HTMLInputElement).value);
                         audioManager.playSound("DEFAULT_SELECT");
-                    }}>Apply</button>
+                    }}>Apply</p>
                 </TextBoxOption>
                 <TextBoxOption label="Background" id="background" defaultValue={relBgPath ? relBgPath : ""} placeholder="Background file path">
-                    <button id="hotfix" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
+                    <p className="button" id="hotfix" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
                         mapConfig.setBg(path.join(mapConfig.dir, (document.querySelector("#background input") as HTMLInputElement).value));
                         audioManager.playSound("DEFAULT_SELECT");
-                    }}>Apply</button>
-                    <button onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
+                    }}>Apply</p>
+                    <p className="button" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
                         inputFile(inputBg);
                         audioManager.playSound("DEFAULT_SELECT");
-                    }}>Upload</button>
+                    }}>Upload</p>
                 </TextBoxOption>
                 <TextBoxOption label="Audio Track" id="track" defaultValue={relTrackPath ? relTrackPath : ""} placeholder="Track file path">
-                    <button id="hotfix" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
+                    <p className="button" id="hotfix" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
                         mapConfig.setAudio(path.join(mapConfig.dir, (document.querySelector("#track input") as HTMLInputElement).value));
                         audioManager.playSound("DEFAULT_SELECT");
-                    }}>Apply</button>
-                    <button onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
+                    }}>Apply</p>
+                    <p className="button" onMouseEnter={() => audioManager.playSound("DEFAULT_HOVER")} onClick={() => {
                         inputFile(inputTrack);
                         audioManager.playSound("DEFAULT_SELECT");
-                    }}>Upload</button>
+                    }}>Upload</p>
                 </TextBoxOption>
             </div>
             <div id="metadata">

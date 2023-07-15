@@ -49,7 +49,7 @@ walk("public/defaultuserfiles", (err, results: [string]) => {
 	if (err) {
 		throw err;
 	}
-	for (var i = 0;  i < results.length; i++) {
+	for (var i = 0; i < results.length; i++) {
 		results[i] = path.normalize(results[i].substring(results[i].indexOf("defaultuserfiles")));
 	}
 
@@ -70,7 +70,7 @@ async function render(req: Request, res: Response, importer: PageImporter) {
 	} else {
 		// In production we'll figure out the path to the client entry file using the manifest
 		// @ts-expect-error: This only exists after the client build is complete
-		const manifest = (await import("./dist/client/manifest.json")).default;
+		const manifest = (await import("../dist/client/manifest.json")).default;
 		clientEntryPath = manifest["entry-client.tsx"].file;
 
 		// In a real application we would also use the manifest to generate
@@ -85,9 +85,7 @@ async function render(req: Request, res: Response, importer: PageImporter) {
 		<body>
 			<div id="root">${renderToString(
 		//@ts-ignore
-		<App>
-			<Page />
-		</App>,
+		<Page />
 	)}</div>
 			<script type="module" src="${clientEntryPath}"></script>
 		</body>

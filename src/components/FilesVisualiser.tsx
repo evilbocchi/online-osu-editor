@@ -28,11 +28,11 @@ const PathVisualiser = ({ dir, cd, setSelected }) => {
 
 const PathButton = ({ dir, fileName, cd, setSelected }) => {
     const audioManager = useContext(MapAudioContext);
-    return (<button onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }} onClick={() => {
+    return (<p onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }} onClick={() => {
         cd(dir);
         setSelected(null);
         audioManager.playSound("DEFAULT_SELECT");
-    }}>{fileName + " >"}</button>);
+    }}>{fileName + " >"}</p>);
 }
 
 const DirectoryManageOption = ({ label, onClick }) => {
@@ -41,7 +41,7 @@ const DirectoryManageOption = ({ label, onClick }) => {
         audioManager.playSound("DEFAULT_SELECT");
         onClick(e);
     }}>
-        <button>{label}</button>
+        <p className="label">{label}</p>
     </div>);
 }
 
@@ -195,9 +195,9 @@ const DirectoryItem = ({ dir, fs, cd, selected, setSelected }) => {
             }
         }}>
         <img className="icon" src={getFileIcon(dir, isFolder, data)} />
-        <button onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>{getFileName(dir)}</button>
-        <p>{getFileKind(dir, isFolder)}</p>
-        <p>{size > 0 ? getFormattedSize(size) : ""}</p>
+        <p className="label" onMouseEnter={() => { audioManager.playSound("DEFAULT_HOVER"); }}>{getFileName(dir)}</p>
+        <p className="info">{getFileKind(dir, isFolder)}</p>
+        <p className="info">{size > 0 ? getFormattedSize(size) : ""}</p>
     </div>);
 }
 

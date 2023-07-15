@@ -10,7 +10,7 @@ const SpeedOption = ({ speed }) => {
             //@ts-ignore
             active={(context.trackSpeed == speed).toString()}
             onClick={() => context.setTrackSpeed(speed)}>
-            <button className="buttonlabel">{speed * 100}%</button>
+            <p className="buttonlabel">{speed * 100}%</p>
         </div>
     );
 }
@@ -82,7 +82,7 @@ const Timeline = ({ }) => {
                 onClick={() => {
                     mapAudioContext.setPlaying(!mapAudioContext.isPlaying);
                 }}>
-                <button className="buttonlabel">{mapAudioContext.isPlaying == true ? "Stop" : "Play"}</button>
+                <p className="buttonlabel">{mapAudioContext.isPlaying == true ? "Stop" : "Play"}</p>
             </div>
         </div>
     </div>);

@@ -1,9 +1,9 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import FileProvider from '@/contexts/FileSystem';
 import Editor from '@/Editor';
-import '@/styles.css'
+import "@/styles/styles.scss";
 
-export default function App(): ReactElement<any> {
+export default function App() {
     return (
         <React.StrictMode>
             <FileProvider>
