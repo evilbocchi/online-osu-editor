@@ -18,6 +18,7 @@ const SelectAudio = ({ children }) => {
     onMouseUp={() => { audioManager.playSound("DESELECT") }}>
     {children}
   </div>);
+
 }
 
 const Editor = () => {
