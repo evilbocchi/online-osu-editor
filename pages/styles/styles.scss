@@ -1,5 +1,5 @@
 @import url("/fonts/toruspro/stylesheet.css");
-@import url("@/styles/rangeslider.css");
+@import url("#root/styles/rangeslider.css");
 
 :root {
   font-family: 'Torus Notched', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -389,6 +389,18 @@ p {
         border-radius: 3.5rem;
         border: 0.3rem solid #2299BB;
       }
+
+      .removebutton {
+        @include absolute(0.2rem, 0.2rem);
+        @include zeroMargin;
+        z-index: 4;
+        border-radius: 1rem;
+        border: 0.2rem solid #bb2222;
+        background-color: #2E3835;
+        font-weight: bold;
+        padding: 0rem 0.7rem 0rem 0.7rem;
+        height: fit-content;
+      }
     }
   }
 
@@ -413,7 +425,7 @@ p {
 .miscoption {
   @include zeroMP;
   position: relative;
-  justify-content: space-between;
+  justify-content: space-between !important;
   overflow: visible;
   width: 80%;
 
@@ -527,18 +539,6 @@ input:checked+.slider:before {
   font-weight: bold;
 }
 
-.option .removebutton {
-  position: absolute;
-  z-index: 4;
-  border: 0.2rem solid #bb2222;
-  left: 0.2rem;
-  top: 0.2rem;
-  margin: 0;
-  padding: 0rem 0.7rem 0rem 0.7rem;
-  height: fit-content;
-
-}
-
 .tooltip {
   @include absolute;
   background-color: #323332;
@@ -576,23 +576,26 @@ input:checked+.slider:before {
 }
 
 .timeline {
-  position: fixed;
-  display: flex;
-  flex-direction: row;
-  background-color: #222A27;
-  bottom: 0px;
+  @include flex(space-between, center, row);
   @include fullWidth;
+  position: fixed;
+  background-color: #222A27;
+  bottom: 0 !important;
   z-index: 5;
-}
 
-.timeline .labels {
-  flex-basis: 10%;
-  flex-grow: 0;
-  margin: 0 1.75rem 1vh 1.75rem;
-}
+  .labels {
+    @include flexBasis(10%, 0, 0);
+    margin: 0 1.75rem 0 1.75rem;
+  }
 
-.labels * {
-  margin: 0 0 -0.5rem 0;
+  .main {
+    @include flexBasis(65%, 0, 2);
+    position: relative;
+    background-color: #171C1A;
+    height: 4rem;
+    z-index: 0;
+    overflow: hidden;
+  }
 }
 
 .labels h4 {
@@ -609,21 +612,10 @@ input:checked+.slider:before {
   font-size: 0.9rem;
 }
 
-.timeline .main {
-  position: relative;
-  background-color: #171C1A;
-  flex-basis: 65%;
-  z-index: 0;
-  overflow: hidden;
-}
-
 .main .line {
-  position: absolute;
+  @include absolute(50%, 50%, -50%, -50%);
   width: 90%;
   height: 2px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   background-color: #45544F;
 }
 
@@ -656,19 +648,21 @@ input:checked+.slider:before {
 }
 
 .playbackoptions {
-  display: flex;
-  flex-basis: 25%;
-  justify-content: space-between;
+  @include flexBasis(25%);
+  @include flex(space-between, center, row);
 }
 
 .playbackoptions .labels {
-  margin: 1vh 0 0 1rem;
-  flex-basis: 50%;
+  @include flex(center, center, column);
+  @include flexBasis(60%);
+  @include zeroMargin;
+  height: 4rem;
+  margin: 0;
 }
 
 .speedoptions {
-  display: flex;
-  justify-content: space-between;
+  @include flex(space-evenly, center, row);
+  width: 100%;
 }
 
 .speedoptions .button {
@@ -678,8 +672,9 @@ input:checked+.slider:before {
 }
 
 #playbutton {
+  @include flexBasis(40%);
+  height: 4rem;
   background-color: #FFD966;
-  flex-basis: 25%;
 }
 
 #playbutton:hover {
@@ -687,9 +682,9 @@ input:checked+.slider:before {
 }
 
 #playbutton .buttonlabel {
+  @include absolute(50%, 50%, -50%, -50%);
   color: #1A1E1B;
   font-size: 1.1rem;
-  height: 100%;
 }
 
 .filesvisualiser {
@@ -835,33 +830,25 @@ input:checked+.slider:before {
 }
 
 .detailedtimeline .main {
-  display: flex;
-  justify-content: left;
-  position: absolute;
+  @include absolute(none, 50%, -50%, 0);
+  @include flex(left, space-between, row);
+  @include zeroMargin;
   width: calc(100% - 2rem);
   height: calc(100% - 1rem);
-  left: 50%;
   bottom: 0;
-  transform: translateX(-50%);
-  margin: 0 0 0 0;
   overflow: hidden;
 }
 
 .main .viewoptions {
   @include flex(space-evenly, center);
-  @include flexBasis(10%, 0, 0);
+  @include flexBasis(10rem, 0, 0);
   position: relative;
   background-color: #45544F;
 }
 
 .main .zoomoptions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  flex-basis: 2.5%;
-  flex-shrink: 0;
-  flex-grow: 0;
+  @include flex(space-evenly, center, column);
+  @include flexBasis(2rem);
   background-color: #37433F;
   color: #5C7069;
   text-align: center;
@@ -870,7 +857,7 @@ input:checked+.slider:before {
 .zoomoptions .zoomin,
 .zoomoptions .zoomout {
   @include fullWidth;
-  flex-basis: 50%;
+  @include flexBasis(50%);
   background-color: #37433F;
   border-radius: 0.5rem;
   transition: 0.2s;
@@ -881,11 +868,9 @@ input:checked+.slider:before {
 }
 
 .main .timelinevisualiser {
+  @include flexBasis(80%, 0, 1);
   position: relative;
   overflow: hidden;
-  flex-basis: 80%;
-  flex-shrink: 0;
-  flex-grow: 0;
   background-color: #222A27;
 }
 
@@ -896,63 +881,48 @@ input:checked+.slider:before {
 }
 
 .timelinevisualiser .tpindicator {
-  position: absolute;
+  @include absolute(50%, 0, -50%, -50%);
   background-color: #CC6600;
   height: 3rem;
-  top: 50%;
-  left: 0;
-  transform: translate(-50%, -50%);
   width: 2px;
   z-index: 1;
 }
 
 .tpindicator .bpmlabel {
-  position: absolute;
+  @include absolute(-1.25rem, 50%, -50%, 0);
+  @include zeroMargin;
   background-color: #FFD966;
   border-radius: 0.5rem;
   color: #242B28;
   font-weight: bold;
   font-size: 0.6rem;
   width: fit-content;
-  left: 50%;
-  top: -1.25rem;
-  transform: translate(-50%, 0);
   white-space: nowrap;
   padding: 0 0.2rem 0 0.2rem;
-  margin: 0 0 0 0;
   text-align: center;
 }
 
 .beatindicator {
-  position: absolute;
+  @include absolute(50%, 0, -50%, -50%);
   background-color: #ffffff;
   height: 3rem;
-  top: 50%;
-  left: 0;
-  transform: translate(-50%, -50%);
   width: 1px;
   z-index: 1;
   border-radius: 1rem;
 }
 
 .main .snapoptions {
+  @include flex(space-evenly, center, column);
+  @include flexBasis(6.5rem);
   position: relative;
-  display: flex;
   overflow: hidden;
-  flex-basis: 6.5%;
-  flex-shrink: 0;
-  flex-grow: 0;
   margin: 0 0 0 1%;
   background-color: #394642;
   text-align: center;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
 }
 
 .snapoptions * {
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+  @include zeroMP;
 }
 
 .snapoptions h2 {
@@ -968,10 +938,7 @@ input:checked+.slider:before {
 }
 
 .snapoptions .buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  @include flex(space-evenly, center, row);
   @include fullWidth;
 }
 
@@ -983,45 +950,36 @@ input:checked+.slider:before {
 }
 
 .timingoptions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include flex(space-between, center, row);
   @include fullWidth;
   height: 40rem;
 }
 
 .timingpointsoptions {
-  display: flex;
-  flex-basis: 75%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: center;
+  @include flex(center, start, row);
+  @include flexBasis(75%);
   height: 100%;
   overflow: scroll;
 }
 
 .timeoptions {
-  flex-basis: 28%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 0 1% 0 1%;
+  @include flexBasis(28%);
+  padding: 0 1rem 0 1rem;
+  height: 100%;
   background-color: #394642;
 }
 
 .timeoptions *,
 .attributeoptions * {
-  display: flex;
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+  @include zeroMP;
+  @include flex(left, center, row);
   height: 2rem;
-  align-items: center;
 }
 
 .attributeoptions {
-  flex-basis: 68%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 0 1% 0 1%;
+  @include flexBasis(68%, 0, 1);
+  padding: 0 1rem 0 1rem;
+  height: 100%;
   background-color: #2E3835;
 }
 
@@ -1047,6 +1005,7 @@ input:checked+.slider:before {
 .attributeoption .miscoption {
   background-color: #2E3835;
   border-radius: 0.35rem;
+  margin: 0 1rem 0 1rem;
   padding: 0 2rem 0 2rem;
   height: 80%;
   font-size: 0.75rem;
@@ -1054,15 +1013,12 @@ input:checked+.slider:before {
 
 .attributeoption .miscoption {
   background-color: #222A27;
-  width: 50%;
+  min-width: 5rem !important;
 }
 
 .timingpointeditor {
+  @include flex(center, center, column);
+  @include flexBasis(25%);
   background-color: #171C1A;
-  display: flex;
-  flex-basis: 25%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: center;
   height: 100%;
 }

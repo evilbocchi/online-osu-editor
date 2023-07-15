@@ -1,11 +1,11 @@
-import { path } from "@/utils/filesystem";
+import { path } from "#root/utils/filesystem";
 
 export const getRelativePath = (mapFolderDir: string, fileDir: string) => {
     return path.relative(mapFolderDir, fileDir);
 }
 
 export const getMapFileName = (mapConfig: any): string => {
-    return getArtist(mapConfig)+" - "+getTitle(mapConfig)+" ("+mapConfig.creator+") ["+mapConfig.difficulty+"].osu";
+    return getArtist(mapConfig) + " - " + getTitle(mapConfig) + " (" + mapConfig.creator + ") [" + mapConfig.difficulty + "].osu";
 }
 
 // these are the best helper functions in the world (real)

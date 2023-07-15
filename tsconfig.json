@@ -3,9 +3,10 @@
         "allowJs": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"],
-          },
-
+            "#root/*": [
+                "pages/*"
+            ],
+        },
         "target": "ES2020",
         "useDefineForClassFields": true,
         "lib": [
@@ -15,22 +16,22 @@
         ],
         "module": "ESNext",
         "skipLibCheck": true,
-
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-
         "strict": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
     "include": [
-        "src"
-, "src/entry-server.tsx", "entry-server.tsx"    ],
+        "src",
+        "src/entry-server.tsx",
+        "entry-server.tsx"
+    ],
     "references": [
         {
             "path": "./tsconfig.node.json"

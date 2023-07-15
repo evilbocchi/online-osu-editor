@@ -1,15 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { FSModule } from "browserfs/dist/node/core/FS";
 
-import { RESOURCES } from "@/utils/constants";
-import { inputFiles } from "@/utils/input";
-import { path } from "@/utils/filesystem";
-import { getDataUrl } from "@/utils/file";
+import { RESOURCES } from "#root/utils/constants";
+import { inputFiles } from "#root/utils/input";
+import { path } from "#root/utils/filesystem";
+import { getDataUrl } from "#root/utils/file";
 
-import { MapAudioContext } from "@/contexts/AudioManager";
-import { MapContext } from "@/contexts/MapManager";
-import { getArtist, getRelativePath, getTitle } from "@/utils/mapmanager";
-import { getLuminance } from "@/utils/color";
+import { MapAudioContext } from "#root/contexts/AudioManager";
+import { MapContext } from "#root/contexts/MapManager";
+import { getArtist, getRelativePath, getTitle } from "#root/utils/mapmanager";
+import { getLuminance } from "#root/utils/color";
 
 const SetupNavbarTabSelect = ({ id, label }) => {
     const audioManager = useContext(MapAudioContext);
@@ -75,7 +75,6 @@ const SliderOption = ({ label, id, desc, min, max, defaultValue, step, onChange,
                     if (onChange) { onChange((newValue * step).toFixed(-Math.log10(step))); }
                 }} onMouseMove={(e) => {
                     const rect = bounding.current.getBoundingClientRect();
-                    console.log(e.pageX)
                     tooltip.current.style.opacity = "1";
                     tooltip.current.style.top = (e.clientY - rect.y + 20).toString() + "px";
                     tooltip.current.style.left = (e.clientX - rect.x + 5).toString() + "px";

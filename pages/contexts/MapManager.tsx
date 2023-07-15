@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { FileContext } from "@/contexts/FileSystem";
+import { FileContext } from "#root/contexts/FileSystem";
 
-import HitObject, { TimingPoint } from "@/utils/hitobject";
-import { isEmpty, mkdirs } from "@/utils/filesystem";
+import HitObject, { TimingPoint } from "#root/utils/hitobject";
+import { isEmpty, mkdirs } from "#root/utils/filesystem";
 
 export const MapContext = createContext({} as any);
 
@@ -103,7 +103,7 @@ export const MapConfig = ({ children }) => {
                                 });
                             }
                             else {
-                                mkdirs(path+"/fill.osu", (e) => {
+                                mkdirs(path + "/fill.osu", (e) => {
                                     if (e) { throw e; }
                                     setDir(path);
                                 });

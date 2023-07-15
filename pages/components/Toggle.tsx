@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { MapAudioContext } from "@/contexts/AudioManager";
+import React, { useContext, useEffect, useState } from "react";
+import { MapAudioContext } from "#root/contexts/AudioManager";
 
 const Toggle = ({ label, id, defaultValue, onClick }) => {
     const audioManager = useContext(MapAudioContext);

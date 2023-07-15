@@ -1,6 +1,6 @@
 import * as BrowserFS from 'browserfs';
 import { createContext, useEffect, useState } from 'react';
-import { ROOT_DIRECTORY } from '@/utils/constants';
+import { ROOT_DIRECTORY } from '#root/utils/constants';
 import { FSModule } from 'browserfs/dist/node/core/FS';
 
 export const FileContext = createContext<FSModule>({} as FSModule);

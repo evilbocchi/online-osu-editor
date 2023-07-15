@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import DetailedTimeline from "@/components/DetailedTimeline";
-import { MapContext } from "@/contexts/MapManager";
-import { formatTime } from "@/utils/hitobject";
-import Toggle from "@/components/Toggle";
+import DetailedTimeline from "#root/components/DetailedTimeline";
+import { MapContext } from "#root/contexts/MapManager";
+import { formatTime } from "#root/utils/hitobject";
+import Toggle from "#root/components/Toggle";
 
 const TimingSection = ({ active }) => {
     const mapConfig = useContext(MapContext);
@@ -34,11 +34,9 @@ const TimingSection = ({ active }) => {
                     </div>
                     {timingPoints.map((timingPoint) => {
                         return (<div className="attributeoption" key={timingPoint.time}>
-                            <div className="attributeoption">
-                                <Toggle label="Kiai" id="kiai" defaultValue={timingPoint.isKiai} onClick={() => {
-                                    console.log(mapConfig.timingPoints)
-                                }}></Toggle>
-                            </div>
+                            <Toggle label="Kiai" id="kiai" defaultValue={timingPoint.isKiai} onClick={() => {
+                                console.log(mapConfig.timingPoints)
+                            }}></Toggle>
                         </div>);
                     })}
                 </div>

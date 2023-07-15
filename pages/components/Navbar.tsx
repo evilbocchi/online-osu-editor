@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MapAudioContext } from "@/contexts/AudioManager";
+import { MapAudioContext } from "#root/contexts/AudioManager";
 
 function NavbarDropdownOption({ label, type, onClick }) {
     const audioManager = useContext(MapAudioContext);

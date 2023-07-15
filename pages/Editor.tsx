@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import Navbar from '@/components/Navbar';
-import Playfield from '@/components/Playfield';
-import Timeline from '@/components/Timeline';
+import Navbar from '#root/components/Navbar';
+import Playfield from '#root/components/Playfield';
+import Timeline from '#root/components/Timeline';
 
-import { FileContext } from '@/contexts/FileSystem';
-import { MapConfig } from '@/contexts/MapManager';
-import AudioManager, { MapAudioContext } from '@/contexts/AudioManager';
+import { FileContext } from '#root/contexts/FileSystem';
+import { MapConfig } from '#root/contexts/MapManager';
+import AudioManager, { MapAudioContext } from '#root/contexts/AudioManager';
 
-import { parseIni } from '@/utils/ini';
-import { fetchResource, mkdirs, path } from '@/utils/filesystem';
-import { dataUrlToUtf8 } from '@/utils/file';
+import { parseIni } from '#root/utils/ini';
+import { fetchResource, mkdirs, path } from '#root/utils/filesystem';
+import { dataUrlToUtf8 } from '#root/utils/file';
 
 const SelectAudio = ({ children }) => {
   const audioManager = useContext(MapAudioContext);
@@ -27,38 +27,30 @@ const Editor = () => {
 
   const defaultFiles = () => {
     console.log("Enforcing default files");
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/defaultfilesindex");
-
-    // extract this to method later
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var filesIndex = JSON.parse(xhr.responseText);
-        var filesWritten = 0;
-        for (var i = 0; i < filesIndex.length; i++) {
-          const file = filesIndex[i];
-          fetchResource(file, (err, data) => {
-            if (err) { throw err; }
-            const dir = path.normalize(file.replace("defaultuserfiles", "").replaceAll("\\", "/"));
-            mkdirs(dir, (e) => {
-              if (e) {
-                throw e;
+    fetch("/defaultfilesindex.json").then((res) => res.json()).then((filesIndex) => {
+      console.log(filesIndex)
+      var filesWritten = 0;
+      for (var i = 0; i < filesIndex.length; i++) {
+        const file = filesIndex[i];
+        fetchResource(file, (err, data) => {
+          if (err) { throw err; }
+          const dir = path.normalize(file.replace("defaultuserfiles", "").replaceAll("\\", "/"));
+          mkdirs(dir, (e) => {
+            if (e) {
+              throw e;
+            }
+            fs.writeFile(dir, data, (e) => {
+              if (e) { throw e; }
+              filesWritten++;
+              if (filesWritten == filesIndex.length) {
+                setLoading(false);
+                location.reload();
               }
-              fs.writeFile(dir, data, (e) => {
-                if (e) { throw e; }
-                filesWritten++;
-                if (filesWritten == filesIndex.length) {
-                  setLoading(false);
-                  location.reload();
-                }
-              });
-            })
-          });
-        }
+            });
+          })
+        });
       }
-    };
-    xhr.send();
+    });
   }
 
   useEffect(() => {

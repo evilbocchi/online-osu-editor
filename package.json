@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "buildssr": "vite build --ssr ./src/entry-server.tsx",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "prod": "npm run lint && npm run build && npm run server:prod",
+    "lint": "eslint ./ --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "browserfs": "^1.4.3",
+    "compression": "^1.7.4",
     "express": "^4.18.2",
     "js-ini": "^1.6.0",
     "path": "^0.12.7",
