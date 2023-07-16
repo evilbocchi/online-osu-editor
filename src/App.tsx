@@ -1,9 +1,9 @@
 import React from 'react';
-import FileProvider from '#root/contexts/FileSystem';
-import Editor from '#root/Editor';
-import "#root/styles/styles.scss";
+import FileProvider from '#/contexts/FileSystem';
+import Editor from '#/Editor';
+import "#/styles/styles.scss";
 
-export function Page() {
+const App = () => {
   return (
     <React.StrictMode>
       <FileProvider>
@@ -12,3 +12,5 @@ export function Page() {
     </React.StrictMode>
   );
 }
+
+export default App;

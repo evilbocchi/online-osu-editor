@@ -1,5 +1,5 @@
 import { BFSRequire } from "browserfs";
-import { getDataUrl, getFileName } from "#root/utils/file";
+import { getDataUrl, getFileName } from "#/utils/file";
 
 export const fs = BFSRequire("fs");
 export const path = BFSRequire("path");

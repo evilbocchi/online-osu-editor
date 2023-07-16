@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { MapAudioContext } from "#root/contexts/AudioManager";
-import Toggle from "#root/components/Toggle";
-import { MapContext } from "#root/contexts/MapManager";
-import { TimingPoint } from "#root/utils/hitobject";
+import { MapAudioContext } from "#/contexts/AudioManager";
+import Toggle from "#/components/Toggle";
+import { MapContext } from "#/contexts/MapManager";
+import { TimingPoint } from "#/utils/hitobject";
 
 // place these elsewhere soon
 const getXPos = (time, currentTime, zoom) => {
@@ -60,6 +60,7 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
             const newTicks = [];
             var i = 0;
             var currentBeatDivide = 0;
+
             const endTime = (nextTimingPoint && nextTimingPoint.time < track.duration * 1000) ?
                 nextTimingPoint.time : track.duration * 1000;
             while (true) {

@@ -9,17 +9,8 @@ import { ssr } from 'vite-plugin-ssr/plugin';
 export default defineConfig({
   resolve: {
     alias: {
-      '#root': path.resolve(__dirname, './pages/'),
+      '#': path.resolve(__dirname, './src/'),
     }
   },
-  plugins: [react(), ssr({ prerender: true })],
+  plugins: [react()],
 })
-
-/**
- vavite({
-    serverEntry: "/src/entry-server.tsx",
-    serveClientAssetsInDev: true,
-    // Don't reload when dynamically imported dependencies change
-    reloadOn: "static-deps-change",
-  }),
- */

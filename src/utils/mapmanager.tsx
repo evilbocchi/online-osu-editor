@@ -1,4 +1,4 @@
-import { path } from "#root/utils/filesystem";
+import { path } from "#/utils/filesystem";
 
 export const getRelativePath = (mapFolderDir: string, fileDir: string) => {
     return path.relative(mapFolderDir, fileDir);

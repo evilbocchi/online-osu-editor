@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import DetailedTimeline from "#root/components/DetailedTimeline";
-import { MapContext } from "#root/contexts/MapManager";
-import { formatTime } from "#root/utils/hitobject";
-import Toggle from "#root/components/Toggle";
+import DetailedTimeline from "#/components/DetailedTimeline";
+import { MapContext } from "#/contexts/MapManager";
+import { formatTime } from "#/utils/hitobject";
+import Toggle from "#/components/Toggle";
 
 const TimingSection = ({ active }) => {
     const mapConfig = useContext(MapContext);

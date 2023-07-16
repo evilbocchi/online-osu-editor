@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import { FSModule } from "browserfs/dist/node/core/FS";
 
-import { FileContext } from "#root/contexts/FileSystem";
-import { dataUrlToUtf8, getDataType, getDataUrl, getFileExt, getFileIcon, getFileKind, getFileName, getFormattedSize } from "#root/utils/file";
-import { ROOT_DIRECTORY } from '#root/utils/constants';
-import { rm, path, download } from "#root/utils/filesystem";
-import { inputDirectory, inputFiles } from "#root/utils/input";
-import { MapAudioContext } from "#root/contexts/AudioManager";
+import { FileContext } from "#/contexts/FileSystem";
+import { dataUrlToUtf8, getDataType, getDataUrl, getFileExt, getFileIcon, getFileKind, getFileName, getFormattedSize } from "#/utils/file";
+import { ROOT_DIRECTORY } from '#/utils/constants';
+import { rm, path, download } from "#/utils/filesystem";
+import { inputDirectory, inputFiles } from "#/utils/input";
+import { MapAudioContext } from "#/contexts/AudioManager";
 
 const PathVisualiser = ({ dir, cd, setSelected }) => {
     var split = dir == ROOT_DIRECTORY ? [""] : dir.split("/");

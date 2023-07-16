@@ -1,5 +1,5 @@
-import FilesVisualiser from "#root/components/FilesVisualiser";
-import { RESOURCES } from "#root/utils/constants";
+import FilesVisualiser from "#/components/FilesVisualiser";
+import { RESOURCES } from "#/utils/constants";
 
 const FilesSection = ({ active }) => {
     // @ts-ignore

@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import Navbar from '#root/components/Navbar';
-import Playfield from '#root/components/Playfield';
-import Timeline from '#root/components/Timeline';
+import Navbar from '#/components/Navbar';
+import Playfield from '#/components/Playfield';
+import Timeline from '#/components/Timeline';
 
-import { FileContext } from '#root/contexts/FileSystem';
-import { MapConfig } from '#root/contexts/MapManager';
-import AudioManager, { MapAudioContext } from '#root/contexts/AudioManager';
+import { FileContext } from '#/contexts/FileSystem';
+import { MapConfig } from '#/contexts/MapManager';
+import AudioManager, { MapAudioContext } from '#/contexts/AudioManager';
 
-import { parseIni } from '#root/utils/ini';
-import { fetchResource, mkdirs, path } from '#root/utils/filesystem';
-import { dataUrlToUtf8 } from '#root/utils/file';
+import { parseIni } from '#/utils/ini';
+import { fetchResource, mkdirs, path } from '#/utils/filesystem';
+import { dataUrlToUtf8 } from '#/utils/file';
 
 const SelectAudio = ({ children }) => {
   const audioManager = useContext(MapAudioContext);

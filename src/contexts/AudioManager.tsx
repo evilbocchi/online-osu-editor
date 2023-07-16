@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { MapContext } from "#root/contexts/MapManager";
-import { RESOURCES } from "#root/utils/constants";
-import { Sound } from "#root/utils/quickaudio";
+import { MapContext } from "#/contexts/MapManager";
+import { RESOURCES } from "#/utils/constants";
+import { Sound } from "#/utils/quickaudio";
 
 export const MapAudioContext = createContext({} as any);
 const sounds = {}; // this is a constant so i assume it doesnt have to be a state

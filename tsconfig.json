@@ -3,8 +3,8 @@
         "allowJs": true,
         "baseUrl": ".",
         "paths": {
-            "#root/*": [
-                "pages/*"
+            "#/*": [
+                "src/*"
             ],
         },
         "target": "ES2020",
@@ -28,9 +28,7 @@
         "noFallthroughCasesInSwitch": true
     },
     "include": [
-        "pages",
-        "renderer",
-        "server"
+        "src",
     ],
     "references": [
         {

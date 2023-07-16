@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
-import { MapAudioContext } from "#root/contexts/AudioManager";
-import { formatTime, getBPM } from "#root/utils/hitobject";
+import { MapAudioContext } from "#/contexts/AudioManager";
+import { formatTime, getBPM } from "#/utils/hitobject";
 
 const SpeedOption = ({ speed }) => {
     const context = useContext(MapAudioContext);

@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { FileContext } from "#root/contexts/FileSystem";
+import { FileContext } from "#/contexts/FileSystem";
 
-import HitObject, { TimingPoint } from "#root/utils/hitobject";
-import { isEmpty, mkdirs } from "#root/utils/filesystem";
+import HitObject, { TimingPoint } from "#/utils/hitobject";
+import { isEmpty, mkdirs } from "#/utils/filesystem";
 
 export const MapContext = createContext({} as any);
 
