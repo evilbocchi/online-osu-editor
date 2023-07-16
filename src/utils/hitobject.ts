@@ -44,3 +44,19 @@ export const formatTime = (s: number) => {
     s = (s - secs) / 60;
     return (s > 99 ? s : pad(s)) + ':' + pad(secs) + '.' + pad(ms, 3);
 }
+
+export const getSelected = (e: any, currentlySelected: any[],
+    lastSelect: any, toSelect: any, items: any[]) => {
+    if (e.ctrlKey) {
+        var newtps = currentlySelected.slice();
+        newtps.push(toSelect);
+        return newtps;
+    }
+    else if (e.shiftKey) {
+        var start = items.indexOf(toSelect);
+        var end = items.indexOf(lastSelect);
+        return items.slice(Math.min(start, end), Math.max(start, end) + 1);
+    } else {
+        return [toSelect];
+    }
+}

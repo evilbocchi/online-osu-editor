@@ -158,7 +158,9 @@ const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTick
     }, [mapAudioContext]);
     useEffect(() => {
         const handleWindowResize = () => {
-            setViewWidth(ref.current.getBoundingClientRect().width);
+            if (ref.current) {
+                setViewWidth(ref.current.getBoundingClientRect().width);
+            }
         }
         if (track) { ref.current.addEventListener("wheel", handleWheel, { passive: false }); }
         window.addEventListener('resize', handleWindowResize);

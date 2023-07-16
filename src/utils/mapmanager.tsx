@@ -1,4 +1,5 @@
 import { path } from "#/utils/filesystem";
+import { TimingPoint } from "./hitobject";
 
 export const getRelativePath = (mapFolderDir: string, fileDir: string) => {
     return path.relative(mapFolderDir, fileDir);
@@ -23,4 +24,12 @@ export const getTitle = (mapConfig: any): string => {
 
 export const getTitleUnicode = (mapConfig: any): string => {
     return mapConfig.titleUnicode == "" ? mapConfig.title : mapConfig.titleUnicode;
+}
+
+export const getCurrentTP = (mapConfig: any, time: number): TimingPoint => {
+    for (var i = 0; i < mapConfig.timingPoints.length; i++) {
+        if (mapConfig.timingPoints[i] > time) {
+            return mapConfig.timingPoints[i];
+        }
+    }
 }
