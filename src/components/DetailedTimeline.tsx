@@ -67,7 +67,7 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
                 const time = timingPoint.time + (i * (1 / timingPoint.bpm) * 60000 / beatDivisor);
                 i++;
                 currentBeatDivide = currentBeatDivide > beatDivisor - 1 ? 1 : currentBeatDivide + 1;
-                if (time > endTime) {
+                if (time > endTime || i > 9999) {
                     break;
                 }
                 if (Math.abs(time - track.currentTime * 1000) > viewWidth / zoom * 100) {
