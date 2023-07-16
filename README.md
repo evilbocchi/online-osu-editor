@@ -1,5 +1,7 @@
 <p align="center">
-    <img width="200px" src="https://raw.githubusercontent.com/evilbocchi/online-osu-editor/main/favicon.ico">
+    <a href="https://online-osu-editor.vercel.app">
+        <img width="200px" src="https://raw.githubusercontent.com/evilbocchi/online-osu-editor/main/favicon.ico">
+    </a>
     <h1>
         online-osu-editor
     </h1>
@@ -10,7 +12,7 @@
 </p>
 
 <p align="center">
-    Be warned when using this application that this project is still in heavy development and will contain many unnoticed bugs and have many core features missing.
+    A live demo build at <a href="https://online-osu-editor.vercel.app">online-osu-editor.vercel.app</a> is available for showcasing purposes. Be warned when using this application that this project is still in heavy development and will contain many unnoticed bugs and have many core features missing.
 </p>
 
 ## Running Locally

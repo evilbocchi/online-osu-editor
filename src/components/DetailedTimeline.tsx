@@ -56,7 +56,7 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
     const [ticks, setTicks] = useState([]);
     const ref = useRef(null);
     const updateBeatTicks = () => {
-        if (showTicks && track) {
+        if (showTicks && track && track.duration) {
             const newTicks = [];
             var i = 0;
             var currentBeatDivide = 0;
@@ -89,7 +89,7 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
             }
         }, 10);
         return (() => { clearInterval(timer); });
-    }, [track, zoom]);
+    }, [track, zoom, viewWidth]);
 
     useEffect(() => {
         updateBeatTicks();
@@ -106,7 +106,7 @@ const TimingPointIndicator = ({ timingPoint, nextTimingPoint, zoom, beatDivisor,
     }, [showTicks, beatDivisor, track, zoom]);
 
     return (<div className="tpindicator" ref={ref}>
-        {timingPoint.bpm > 0 ? <p className="bpmlabel">{timingPoint.bpm} BPM</p> : <></>}
+        {timingPoint.bpm > 0 ? <p className="bpmlabel">{timingPoint.bpm.toFixed(1)} BPM</p> : <></>}
         {ticks.map((tick) => {
             //@ts-ignore
             return (<BeatIndicator key={tick.time} pos={getXPos(tick.time, timingPoint.time, zoom)} time={tick.time}
@@ -157,9 +157,19 @@ const TimelineVisualiser = ({ mapConfig, mapAudioContext, showWaveform, showTick
         setTrack(mapAudioContext.getTrack());
     }, [mapAudioContext]);
     useEffect(() => {
-        setViewWidth(ref.current.getBoundingClientRect().width);
+        const handleWindowResize = () => {
+            setViewWidth(ref.current.getBoundingClientRect().width);
+        }
         if (track) { ref.current.addEventListener("wheel", handleWheel, { passive: false }); }
-        return (() => { if (ref.current) { ref.current.removeEventListener("wheel", handleWheel, { passive: false }); } });
+        window.addEventListener('resize', handleWindowResize);
+        handleWindowResize();
+
+        return (() => {
+            if (ref.current) {
+                window.removeEventListener('resize', handleWindowResize);
+                ref.current.removeEventListener("wheel", handleWheel, { passive: false });
+            }
+        });
     }, [track]);
     const goToTime = (time) => {
         document.querySelectorAll(".tpindicator").forEach((element: any) => {
