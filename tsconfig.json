@@ -28,9 +28,9 @@
         "noFallthroughCasesInSwitch": true
     },
     "include": [
-        "src",
-        "src/entry-server.tsx",
-        "entry-server.tsx"
+        "pages",
+        "renderer",
+        "server"
     ],
     "references": [
         {
